@@ -1,0 +1,78 @@
+<app-layout>
+  <div class="content">
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Lista de Espécies</h2>
+        <button mat-raised-button class="btn-nova" (click)="abrirCadastroEspecie()">
+          Nova Espécie
+        </button> 
+      </div>
+
+      <div class="search-bar">
+        <input
+          matInput
+          placeholder="Pesquisar espécie..."
+          [(ngModel)]="searchTerm"
+          (input)="aplicarFiltro($event)" />
+        <i class="fa fa-search"></i>
+      </div>
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let especie"> {{ especie.id }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nome">
+          <th mat-header-cell *matHeaderCellDef> Nome </th>
+          <td mat-cell *matCellDef="let especie"> {{ especie.nome }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nomeCientifico">
+          <th mat-header-cell *matHeaderCellDef> Nome Científico </th>
+          <td mat-cell *matCellDef="let especie"> {{ especie.nomeCientifico }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ano">
+          <th mat-header-cell *matHeaderCellDef> Ano </th>
+          <td mat-cell *matCellDef="let especie"> {{ especie.ano }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acoes">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let especie" class="acoes-cell">
+            <button mat-icon-button color="primary" matTooltip="Ver Taxonomia" (click)="verTaxonomia(especie)">
+              <mat-icon>account_tree</mat-icon>
+            </button>
+            <button mat-icon-button color="accent" matTooltip="Editar" (click)="editarEspecie(especie)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" matTooltip="Excluir" (click)="excluirEspecie(especie)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <!-- Paginação manual (visual antigo) -->
+      <div class="pagination">
+        <span>Itens por página:</span>
+        <select [(ngModel)]="itensPorPagina" (change)="alterarItensPorPagina()">
+          <option *ngFor="let qtd of [5,10,20]" [value]="qtd">{{ qtd }}</option>
+        </select>
+        <span>{{ dataSource.filteredData.length }} total</span>
+      </div>
+
+      <!-- Paginator oculto para MatTable -->
+      <mat-paginator #paginator [pageSize]="itensPorPagina" [pageSizeOptions]="[5,10,20]" style="display:none"></mat-paginator>
+
+    </div>
+
+    <router-outlet></router-outlet>
+  </div>
+</app-layout>

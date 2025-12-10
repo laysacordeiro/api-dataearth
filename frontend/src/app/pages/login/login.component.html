@@ -1,0 +1,29 @@
+<app-default-login-layout
+    title="DataEarth"
+    primaryBtnText="Login now"
+    secondaryBtnText="Signup now"
+    (submit)="submit()"
+    (navigate)="navigate()"
+>
+    <form [formGroup]="loginForm">
+        <app-primary-input
+            formControlName="email"
+            inputName="email"
+            type="email"
+            label="Email"
+            placeholder="dataearth@gmail.com"
+        >
+            <img src="assets/image/icone-email.png" alt="icon email"/>
+        </app-primary-input>
+        <app-primary-input
+            formControlName="password"
+            inputName="password"
+            type="password"
+            label="Your password"
+        >
+            <img src="assets/image/icone-password.png" alt="icon senha" />
+        </app-primary-input>
+        <span>Forgot password</span>
+        
+    </form>
+</app-default-login-layout>

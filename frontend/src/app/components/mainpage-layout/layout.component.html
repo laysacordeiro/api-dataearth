@@ -1,0 +1,25 @@
+<div class="main-container">
+  <aside class="sidebar">
+    <!-- Logo clicável para ir à Mainpage -->
+    <h2 class="logo" (click)="irParaMainpage()" style="cursor: pointer;">
+      <img src="./../../assets/image/icon-dataearth.png" alt="DataEarth" class="icon">
+    </h2>
+
+    <nav class="nav-menu">
+      <!-- Espécies com ícone de folha local -->
+      <button (click)="irParaEspecies()" [class.active]="rotaAtiva === 'especies'">
+        <img src="./../../assets/image/icon-folha.png" alt="Folha" class="icon"> Espécies
+      </button>
+
+      <!-- Log Out com ícone local -->
+      <button (click)="logout()">
+        <img src="./../../assets/image/icon-desligar.png" alt="Sair" class="icon"> Sair
+      </button>
+    </nav>
+  </aside>
+
+  <!-- Conteúdo da página será projetado aqui -->
+  <main class="main-content">
+    <ng-content></ng-content>
+  </main>
+</div>

@@ -1,0 +1,132 @@
+<form [formGroup]="formEspecie" class="container">
+
+  <h1>Adicionar Espécie</h1>
+
+  <div class="form-wrapper">
+
+    <!-- Coluna esquerda - Dados Gerais -->
+    <div class="section">
+      <h3>Dados Gerais</h3>
+
+      <label>Nome:</label>
+      <input type="text" formControlName="nome" />
+
+      <label>Nome Científico:</label>
+      <input type="text" formControlName="nomeCientifico" />
+
+      <label>Ano:</label>
+      <input type="number" formControlName="ano" />
+
+      <label>Descrição:</label>
+      <textarea rows="6" formControlName="descricao"></textarea>
+    </div>
+
+    <!-- Coluna direita - Taxonomia -->
+    <div class="section">
+      <h3>Taxonomia</h3>
+
+      <!-- REINO -->
+      <label>Reino:</label>
+      <select formControlName="reinoId" (change)="onSelectChange($event, 'reino')">
+        <option value="">Selecionar...</option>
+        <option *ngFor="let r of reinos" [value]="r.id">{{ r.nome }}</option>
+        <option value="outro">Outro...</option>
+      </select>
+
+      <input
+        *ngIf="mostrarInput.reino"
+        type="text"
+        formControlName="reinoNome"
+        placeholder="Digite o nome do novo Reino"
+        class="input-novo"
+      />
+
+      <!-- FILO -->
+      <label>Filo:</label>
+      <select formControlName="filoId" (change)="onSelectChange($event, 'filo')">
+        <option value="">Selecionar...</option>
+        <option *ngFor="let r of filos" [value]="r.id">{{ r.nome }}</option>
+        <option value="outro">Outro...</option>
+      </select>
+
+      <input
+        *ngIf="mostrarInput.filo"
+        type="text"
+        formControlName="filoNome"
+        placeholder="Digite o nome do novo Filo"
+        class="input-novo"
+      />
+
+      <!-- CLASSE -->
+      <label>Classe:</label>
+      <select formControlName="classeId" (change)="onSelectChange($event, 'classe')">
+        <option value="">Selecionar...</option>
+        <option *ngFor="let r of classes" [value]="r.id">{{ r.nome }}</option>
+        <option value="outro">Outro...</option>
+      </select>
+
+      <input
+        *ngIf="mostrarInput.classe"
+        type="text"
+        formControlName="classeNome"
+        placeholder="Digite o nome da nova Classe"
+        class="input-novo"
+      />
+
+      <!-- ORDEM -->
+      <label>Ordem:</label>
+      <select formControlName="ordemId" (change)="onSelectChange($event, 'ordem')">
+        <option value="">Selecionar...</option>
+        <option *ngFor="let r of ordens" [value]="r.id">{{ r.nome }}</option>
+        <option value="outro">Outro...</option>
+      </select>
+
+      <input
+        *ngIf="mostrarInput.ordem"
+        type="text"
+        formControlName="ordemNome"
+        placeholder="Digite o nome da nova Ordem"
+        class="input-novo"
+      />
+
+      <!-- FAMÍLIA -->
+      <label>Família:</label>
+      <select formControlName="familiaId" (change)="onSelectChange($event, 'familia')">
+        <option value="">Selecionar...</option>
+        <option *ngFor="let r of familias" [value]="r.id">{{ r.nome }}</option>
+        <option value="outro">Outro...</option>
+      </select>
+
+      <input
+        *ngIf="mostrarInput.familia"
+        type="text"
+        formControlName="familiaNome"
+        placeholder="Digite o nome da nova Família"
+        class="input-novo"
+      />
+
+      <!-- GÊNERO -->
+      <label>Gênero:</label>
+      <select formControlName="generoId" (change)="onSelectChange($event, 'genero')">
+        <option value="">Selecionar...</option>
+        <option *ngFor="let r of generos" [value]="r.id">{{ r.nome }}</option>
+        <option value="outro">Outro...</option>
+      </select>
+
+      <input
+        *ngIf="mostrarInput.genero"
+        type="text"
+        formControlName="generoNome"
+        placeholder="Digite o nome do novo Gênero"
+        class="input-novo"
+      />
+
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="salvar" type="button" (click)="salvarEspecie()">Salvar</button>
+    <button class="cancelar" type="button" (click)="fechar()">Cancelar</button>
+  </div>
+
+</form>

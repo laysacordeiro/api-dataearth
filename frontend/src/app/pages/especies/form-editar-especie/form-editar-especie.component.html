@@ -1,0 +1,64 @@
+<form [formGroup]="formEspecie" class="container">
+
+  <h1>Editar Espécie</h1>
+
+  <div class="form-wrapper">
+
+    <!-- Coluna esquerda - Dados Gerais -->
+    <div class="section">
+      <h3>Dados Gerais</h3>
+
+      <label>Nome:</label>
+      <input type="text" formControlName="nome" />
+
+      <label>Nome Científico:</label>
+      <input type="text" formControlName="nomeCientifico" />
+
+      <label>Ano:</label>
+      <input type="number" formControlName="ano" />
+
+      <label>Descrição:</label>
+      <textarea rows="6" formControlName="descricao"></textarea>
+    </div>
+
+    <!-- Coluna direita - Taxonomia -->
+    <div class="section">
+      <h3>Taxonomia</h3>
+
+      <ng-container *ngFor="let nivel of nivelsTaxonomia">
+        <label>{{ nivel | titlecase }}:</label>
+        <div class="input-with-button">
+          <input
+            type="text"
+            [formControlName]="nivel + 'Nome'"
+            [readonly]="isConfirmado(nivel)"
+            placeholder="Digite o nome do {{ nivel }}"
+          />
+
+          <button
+            type="button"
+            class="btn-ok"
+            *ngIf="!isConfirmado(nivel)"
+            (click)="confirmarTaxonomia(nivel)">
+            OK
+          </button>
+
+          <button
+            type="button"
+            class="btn-editar"
+            *ngIf="isConfirmado(nivel)"
+            (click)="editarTaxonomia(nivel)">
+            Editar
+          </button>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="salvar" type="button" (click)="salvarEspecie()">Salvar</button>
+    <button class="cancelar" type="button" (click)="fechar()">Cancelar</button>
+  </div>
+
+</form>

@@ -1,0 +1,36 @@
+<div mat-dialog-content *ngIf="!carregando; else loading">
+  <h2>Dados Gerais</h2>
+
+  <div *ngIf="especie">
+    <p><strong>Espécie:</strong> {{ especie.nome }}</p>
+    <p><strong>Nome Científico:</strong> {{ especie.nomeCientifico }}</p>
+    <p><strong>Ano:</strong> {{ especie.ano }}</p>
+    <p><strong>Descrição:</strong> {{ especie.descricao }}</p>
+  </div>
+
+  <hr />
+
+  <div *ngIf="listaTaxonomiaCompleta.length > 0; else semTaxonomia">
+    <h2>Taxonomia</h2>
+    <ul>
+      <li *ngFor="let t of listaTaxonomiaCompleta">
+        <strong>{{ t.nivel }}:</strong> {{ t.nome }}
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #semTaxonomia>
+    <p>Esta espécie não possui taxonomia cadastrada.</p>
+  </ng-template>
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Carregando...</p>
+  </div>
+</ng-template>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="fechar()">Fechar</button>
+</div>

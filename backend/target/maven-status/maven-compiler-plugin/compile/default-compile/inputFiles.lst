@@ -1,0 +1,15 @@
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/AgroecologiaApplication.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/config/AppConfig.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/config/CorsConfig.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/controller/AuthController.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/controller/EspecieController.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/controller/TaxonomiaController.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/model/Auth.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/model/Especie.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/model/Taxonomia.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/repository/AuthRepository.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/repository/EspecieRepository.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/repository/TaxonomiaRepository.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/service/AuthService.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/service/EspecieService.java
+/home/laysa-cordeiro/Documentos/projetos/Projeto/projeto/backend/agroecologia/src/main/java/com/projeto/agroecologia/domain/service/TaxonomiaService.java

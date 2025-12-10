@@ -1,0 +1,54 @@
+  <app-layout>
+
+  <div class="content">
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Usuários do Sistema</h2>
+      </div>
+
+      <div class="search-bar">
+        <input
+          matInput
+          placeholder="Pesquisar usuário..."
+          [(ngModel)]="searchTerm"
+          (input)="aplicarFiltro($event)" />
+        <i class="fa fa-search"></i>
+      </div>
+
+      <!-- Tabela HTML Padrão (Sem MatTable para evitar erros) -->
+      <table class="mat-elevation-z2"> 
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of dataSource.filteredData">
+            <td>{{ usuario.id }}</td>      <!-- 1ª Célula (ID) -->
+            <td>{{ usuario.fullName }}</td> <!-- 2ª Célula (Nome) -->
+            <td>{{ usuario.email }}</td>    <!-- 3ª Célula (E-mail) -->
+            <td>{{ usuario.role }}</td>     <!-- 4ª Célula (Perfil) -->
+            <td>                             <!-- 5ª Célula (Ações) -->
+              <button class="btn-acao editar" (click)="editar(usuario)"><i class="fa fa-edit"></i></button>
+              <button class="btn-acao deletar" (click)="deletar(usuario)"><i class="fa fa-trash"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination">
+        <span>Itens por página:</span>
+        <select [(ngModel)]="itensPorPagina">
+          <option *ngFor="let qtd of [5,10,20]" [value]="qtd">{{ qtd }}</option>
+        </select>
+        <span>{{ dataSource.data.length }} total</span>
+      </div>
+    </div>
+
+    <router-outlet></router-outlet>
+
+  </div>
+  </app-layout>

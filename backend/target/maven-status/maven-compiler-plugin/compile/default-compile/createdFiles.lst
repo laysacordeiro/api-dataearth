@@ -1,0 +1,15 @@
+com/projeto/agroecologia/domain/config/CorsConfig.class
+com/projeto/agroecologia/AgroecologiaApplication.class
+com/projeto/agroecologia/domain/service/TaxonomiaService.class
+com/projeto/agroecologia/domain/controller/AuthController.class
+com/projeto/agroecologia/domain/model/Taxonomia.class
+com/projeto/agroecologia/domain/controller/TaxonomiaController.class
+com/projeto/agroecologia/domain/repository/TaxonomiaRepository.class
+com/projeto/agroecologia/domain/service/EspecieService.class
+com/projeto/agroecologia/domain/repository/EspecieRepository.class
+com/projeto/agroecologia/domain/controller/EspecieController.class
+com/projeto/agroecologia/domain/service/AuthService.class
+com/projeto/agroecologia/domain/model/Auth.class
+com/projeto/agroecologia/domain/config/AppConfig.class
+com/projeto/agroecologia/domain/repository/AuthRepository.class
+com/projeto/agroecologia/domain/model/Especie.class
