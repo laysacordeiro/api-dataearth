@@ -1,0 +1,43 @@
+
+<div class="Grid">
+  <div class="animation">
+  <div class="Grid2">
+    <div class="row">
+      <div class="text1">
+      <img src="./../../assets/image/reciclagem-logo.jpg" alt="reciclagem" class="iconvalue">
+      </div>
+      <h1>Reserva Biológica do Gurupi</h1>
+      <p>Faça login para solicitar acesso ao sistema</p>
+    </div>
+    <div class="row2">
+    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+      <div class="shell">
+      <div class="form-group">
+        <label for="username">Email</label>
+        <input id="username" type="text" formControlName="username" placeholder="Digite seu email">
+        <small *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+          O email é obrigatório.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input id="password" type="password" formControlName="password" placeholder="Digite sua senha">
+        <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          A senha é obrigatória.
+        </small>
+      </div>
+      <div class="form-group">
+      <button type="submit" [disabled]="loginForm.invalid">Entrar</button>
+
+      <p class="register-text">
+        Não tem conta?
+        <a (click)="navigate()">Crie uma agora</a>
+      </p>
+      </div>
+      </div>
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>

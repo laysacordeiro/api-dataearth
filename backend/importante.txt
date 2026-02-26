@@ -1,0 +1,15 @@
+git init
+git add .
+git commit -m "primeiro commit"
+git branch -M main
+git remote add origin https://github.com/seu-usuario/meu-projeto.git
+ se der erro:
+  git remote remove origin
+  git remote add origin https://github.com/seu-usuario/meu-projeto.git
+git push -u origin main
+
+ubuntu
+digite este comando no terminal "nano ~/.bashrc"
+vá até o final do arquivo 
+cole "export DB_PASSWORD=suasenha123"
+salve o arquivo

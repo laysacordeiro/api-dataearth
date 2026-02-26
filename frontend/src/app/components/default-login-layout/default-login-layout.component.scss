@@ -1,0 +1,95 @@
+@import "../../../styles/variables.scss";
+
+main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    section {
+        height: 100%; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main-section {
+        gap: 8px;
+        flex-grow: 1;
+        background-color: #125b61;
+    }
+
+    .form-section {
+        flex-grow: 0.2;  /* Reduzir o crescimento flexível para tornar a seção menor */
+        padding: 0 20px;  /* Reduzir o padding */
+
+        img {
+            margin-bottom: 20px;  /* Reduzir a margem inferior da imagem */
+            width: 100%;
+            max-width: 250px;  /* Tornar a imagem responsiva */
+            height: auto;
+        }
+
+        h2 {
+            font-size: 18px;  /* Reduzir o tamanho da fonte */
+            font-weight: bold;
+            margin-bottom: 30px;  /* Reduzir a margem inferior */
+        }
+
+        .btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 77%;
+            gap: 20px;  /* Reduzir o espaçamento entre os botões */
+
+            .divider {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;  /* Reduzir o espaçamento entre os elementos do divisor */
+                width: 100%;
+
+                font-size: 12px;  /* Reduzir o tamanho da fonte */
+                color: #125b61;
+                font-weight: 400;
+                text-transform: uppercase;
+
+                div {
+                    flex-grow: 1;
+                    height: 1px;  /* Reduzir a altura da linha */
+                    background-color: #125b61;
+                }
+            }
+
+            button {
+                width: 100%;
+                border-radius: 8px;
+                font-size: 14px;  /* Reduzir o tamanho da fonte */
+                font-weight: 500;
+                border: none;
+                background: transparent;
+                padding: 10px 20px;  /* Reduzir o padding */
+                cursor: pointer;
+
+                &:disabled {
+                    opacity: 0.8;
+                }
+
+                &.btn-primary {
+                    background-color: #125b61;
+                    color: white;
+                    box-shadow: 0px 8px 12px rgba(148, 64, 255, 0.2);
+                }
+
+                &.btn-secondary {
+                    border: 1px solid #125b61;
+                    color: #125b61;
+                }
+            }
+        }
+    }
+}

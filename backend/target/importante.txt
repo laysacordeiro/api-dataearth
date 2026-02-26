@@ -1,0 +1,208 @@
+<img src="./../../assets/image/icon-dataearth.png" alt="DataEarth" class="icon">
+
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ChangeDetectorRef,
+  signal,
+  inject
+} from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { HttpErrorResponse } from '@angular/common/http';
+import { EspecieService } from '../../../services/especie.service';
+import { finalize } from 'rxjs/operators';
+import { Especie } from '../../../models/especie.model';
+import { Taxonomia } from '../../../models/taxonomia.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+@Component({
+  selector: 'app-form-especie',
+  standalone: true,
+  templateUrl: './form-especie.component.html',
+  styleUrls: ['./form-especie.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatCardModule,
+    MatProgressSpinnerModule
+  ]
+})
+export class FormEspecieComponent implements OnInit, AfterViewInit {
+
+  private cdr = inject(ChangeDetectorRef);
+  private fb = inject(FormBuilder);
+  private especieService = inject(EspecieService);
+  private dialogRef = inject(MatDialogRef<FormEspecieComponent>);
+  private data = inject<Especie | null>(MAT_DIALOG_DATA);
+
+  formEspecie!: FormGroup;
+  isEditMode = signal(false); // linha ~44 — agora importado
+  especieId?: number;
+  carregando = true;
+  saving = false;
+
+  especie: Especie | null = null;
+
+  niveisTaxonomicos: Taxonomia['nivel'][] = [
+    'Reino',
+    'Filo',
+    'Classe',
+    'Ordem',
+    'Família',
+    'Gênero'
+  ];
+
+  ngOnInit(): void {
+    this.formEspecie = this.fb.group({
+      nome: ['', Validators.required],
+      nomeCientifico: ['', Validators.required],
+      ano: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
+      descricao: [''],
+      reinoNome: [''],
+      filoNome: [''],
+      classeNome: [''],
+      ordemNome: [''],
+      familiaNome: [''],
+      generoNome: ['', Validators.required]
+    });
+
+    if (this.data) {
+      this.isEditMode.set(true);
+      this.especie = this.data;
+      this.especieId = this.data.id;
+      this.preencherFormularioParaEdicao(this.data);
+    }
+
+    this.carregando = false;
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
+  }
+
+  /** ----------------------------------------------
+   * PREENCHER FORMULÁRIO AO EDITAR
+   * --------------------------------------------- */
+  private preencherFormularioParaEdicao(especie: Especie): void {
+    this.formEspecie.patchValue({
+      nome: especie.nome,
+      nomeCientifico: especie.nomeCientifico,
+      ano: especie.ano,
+      descricao: especie.descricao
+    });
+
+    // padronizamos: tax pode ser Taxonomia | null
+    let tax: Taxonomia | null = (especie.taxonomia ?? null);
+
+    const mapa = new Map<string, string>([
+      ['Reino', 'reinoNome'],
+      ['Filo', 'filoNome'],
+      ['Classe', 'classeNome'],
+      ['Ordem', 'ordemNome'],
+      ['Família', 'familiaNome'],
+      ['Gênero', 'generoNome']
+    ]);
+
+    // while continuará até tax ser null
+    while (tax !== null) {
+      const campo = mapa.get(tax.nivel);
+
+      if (campo) {
+        this.formEspecie.get(campo)?.setValue(tax.nome);
+      }
+
+      // parent agora tem tipo Taxonomia | null (compatível)
+      tax = tax.parent ?? null;
+    }
+  }
+
+  /** ----------------------------------------------
+   * CONSTRUIR TAXONOMIA (USANDO null)
+   * --------------------------------------------- */
+  private construirTaxonomia(): Taxonomia | null {
+    const f = this.formEspecie.value;
+
+    const niveis = [
+      { nivel: 'Reino', valor: f.reinoNome },
+      { nivel: 'Filo', valor: f.filoNome },
+      { nivel: 'Classe', valor: f.classeNome },
+      { nivel: 'Ordem', valor: f.ordemNome },
+      { nivel: 'Família', valor: f.familiaNome },
+      { nivel: 'Gênero', valor: f.generoNome }
+    ];
+
+    // use null consistentemente
+    let parent: Taxonomia | null = null;
+    let ultimo: Taxonomia | null = null;
+
+    // percorre do topo (Reino) até Gênero, criando nodes encadeados
+    for (const item of niveis) {
+      if (!item.valor) continue;
+
+      const node: Taxonomia = {
+        nome: item.valor,
+        nivel: item.nivel,
+        parent: parent
+      };
+
+      parent = node;
+      ultimo = node;
+    }
+
+    // ultimo será o GÊNERO (ou null se nada preenchido)
+    return ultimo;
+  }
+
+  /** ----------------------------------------------
+   * SALVAR ESPÉCIE
+   * --------------------------------------------- */
+  salvarEspecie(): void {
+    this.formEspecie.markAllAsTouched();
+    if (this.formEspecie.invalid) return;
+
+    const taxonomia = this.construirTaxonomia();
+
+    if (!taxonomia) {
+      console.error("Gênero é obrigatório.");
+      return;
+    }
+
+    const payload: Especie = {
+      ...(this.isEditMode() && this.especieId ? { id: this.especieId } : {}),
+      nome: this.formEspecie.value.nome,
+      nomeCientifico: this.formEspecie.value.nomeCientifico,
+      ano: this.formEspecie.value.ano,
+      descricao: this.formEspecie.value.descricao ?? "",
+      taxonomia: taxonomia
+    };
+
+    console.log("📦 Payload enviado ao backend:", JSON.stringify(payload, null, 2));
+
+    this.saving = true;
+
+    const req$ = this.isEditMode() && this.especieId
+      ? this.especieService.atualizar(this.especieId, payload)
+      : this.especieService.criar(payload);
+
+    req$
+      .pipe(finalize(() => (this.saving = false)))
+      .subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err: HttpErrorResponse) => console.error("❌ Erro ao salvar:", err.error)
+      });
+  }
+
+  fechar(): void {
+    this.dialogRef.close();
+  }
+}

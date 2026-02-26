@@ -1,0 +1,33 @@
+<div class="main-container">
+  <aside class="sidebar">
+    <!-- Logo clicável para ir à Mainpage -->
+    <h2 class="logo" (click)="irParaMainpage()" style="cursor: pointer;">
+      <img src="./../../assets/image/dataearth.png" alt="DataEarth" class="icon">
+    </h2>
+
+    <nav class="nav-menu">
+      <!-- Espécies com ícone de folha local -->
+       <button *ngIf="userService.hasRole('ROLE_USER')"(click)="irParaVisitante()">
+        <img src="./../../assets/image/icone-password.png" alt="Folha" class="icon"> Visitante
+      </button>
+       <button *ngIf="userService.hasRole('ROLE_ADMIN') || userService.hasRole('ROLE_RESC')" (click)="irParaMainpage()" [class.active]="rotaAtiva === 'especies'">
+        <img src="./../../assets/image/icon-home.png" alt="Folha" class="icon"> Dashboard
+      </button>
+      <button  *ngIf="userService.hasRole('ROLE_ADMIN') || userService.hasRole('ROLE_RESC')" (click)="irParaEspecies()" [class.active]="rotaAtiva === 'especies'">
+        <img src="./../../assets/image/icon-folha.png" alt="Folha" class="icon"> Espécies
+      </button>
+       <button  *ngIf="userService.hasRole('ROLE_ADMIN') || userService.hasRole('ROLE_RESC')" (click)="irParaMonolito()" [class.active]="rotaAtiva === 'especies'">
+        <img src="./../../assets/image/icon-livro.png" alt="Folha" class="icon"> Monolito
+      </button>
+      <!-- Log Out com ícone local -->
+      <button (click)="logout()">
+        <img src="./../../assets/image/icon-desligar.png" alt="Sair" class="icon"> Sair
+      </button>
+    </nav>
+  </aside>
+
+  <!-- Conteúdo da página será projetado aqui -->
+  <main class="main-content">
+    <ng-content></ng-content>
+  </main>
+</div>

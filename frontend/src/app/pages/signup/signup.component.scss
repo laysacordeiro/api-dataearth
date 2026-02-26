@@ -1,0 +1,94 @@
+span{
+    font-size: 14px;
+}
+@import "../../../styles/variables.scss";
+
+form {
+    width: 80%;  // Reduzir a largura do formulário para 80%
+    max-width: 400px;  // Definir uma largura máxima
+    display: flex;
+    flex-direction: column;
+    gap: 16px;  // Diminuir o espaçamento entre os elementos
+    margin-bottom: 20px;  // Ajustar a margem inferior
+
+    span {
+        font-size: 14px;
+        text-decoration: underline;
+        color: #15991e;
+        text-align: end;
+    }
+}
+.Grid2 {
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+  animation: fadeSlideUp 0.7s ease-out forwards;
+}
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.form-group {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
+  gap: 10px;
+}
+.form-group label {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.form-group input {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  min-width: 300px;
+}
+.form-group button {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  background-color: #15991e;
+  color: #fff;
+  justify-content: center;
+  min-width: 150px;
+}
+.form-group a {
+  color: #15991e;
+}
+
+.shell {
+  padding: 30px;
+  border-radius: 30px;
+}
+.Grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  height: 100vh;
+  background: linear-gradient(135deg, #15991e, #ffffff);
+}

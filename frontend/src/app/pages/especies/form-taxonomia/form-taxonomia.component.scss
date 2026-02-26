@@ -1,0 +1,92 @@
+:host {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Container */
+.dialog-container {
+  width: 100%;
+  max-width: 500px;
+  padding: 1.5rem;
+}
+
+/* Título */
+.titulo {
+  text-align: center;
+  color: #2e7d32;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* Seções */
+.section {
+  margin-bottom: 1.2rem;
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.4rem;
+  }
+
+  p {
+    margin: 0.25rem 0;
+    font-size: 0.95rem;
+    color: #333;
+  }
+}
+
+/* Taxonomia */
+.taxonomia-lista p {
+  margin: 0.2rem 0;
+}
+
+/* Texto alternativo */
+.sem-taxonomia {
+  font-style: italic;
+  color: #777;
+}
+
+/* Botões */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.btn-fechar {
+  background-color: #bdbdbd;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.btn-fechar:hover {
+  background-color: #9e9e9e;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 120px;
+}
+
+.spinner {
+  width: 35px;
+  height: 35px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #2e7d32;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,39 @@
+<div class="Grid">
+  <div class="Grid2">
+    <form [formGroup]="signupForm" (ngSubmit)="submit()">
+      <div class="shell">
+      <div class="form-group">
+        <label for="username">Email</label>
+        <input id="username" type="text" formControlName="username" placeholder="Digite seu email">
+        <small *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched">
+          O email é obrigatório.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input id="password" type="password" formControlName="password" placeholder="Crie uma senha">
+        <small *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+          A senha deve ter no mínimo 6 caracteres.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar senha</label>
+        <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Repita sua senha">
+        <small *ngIf="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched">
+          Confirme sua senha.
+        </small>
+      </div>
+      <div class="form-group">
+      <button type="submit" [disabled]="signupForm.invalid">Registrar</button>
+
+      <p class="login-text">
+        Já tem conta?
+        <a (click)="navigate()">Entrar</a>
+      </p>
+      </div>
+      </div>
+    </form>
+    </div>
+    </div>

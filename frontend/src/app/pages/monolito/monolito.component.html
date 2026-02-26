@@ -1,0 +1,71 @@
+<app-layout>
+  <div class="content">
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Lista de Monólitos</h2>
+        <div class="spaceflex">
+          <button mat-raised-button class="btn-nova" (click)="abrirCadastroMonolito()">
+            Novo Monólito
+          </button>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <input
+          matInput
+          placeholder="Pesquisar monólito..."
+          [(ngModel)]="searchTerm"
+          (input)="aplicarFiltro($event)" />
+        <i class="fa fa-search"></i>
+      </div>
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="station_field_number">
+          <th mat-header-cell *matHeaderCellDef> Station Field Number </th>
+          <td mat-cell *matCellDef="let m"> {{ m.station_field_number }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sampling_number">
+          <th mat-header-cell *matHeaderCellDef> Sampling Number </th>
+          <td mat-cell *matCellDef="let m"> {{ m.sampling_number }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="metodo">
+          <th mat-header-cell *matHeaderCellDef> Método </th>
+          <td mat-cell *matCellDef="let m"> {{ m.metodo }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="collector">
+          <th mat-header-cell *matHeaderCellDef> Coletor </th>
+          <td mat-cell *matCellDef="let m"> {{ m.collector }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acoes">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let m" class="acoes-cell">
+            <button mat-icon-button color="warn" matTooltip="Excluir" (click)="excluirMonolito(m)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div class="pagination">
+        <span>Itens por página:</span>
+        <select [(ngModel)]="itensPorPagina" (change)="alterarItensPorPagina()">
+          <option *ngFor="let qtd of [5,10,20]" [value]="qtd">{{ qtd }}</option>
+        </select>
+        <span>{{ dataSource.filteredData.length }} total</span>
+      </div>
+
+      <mat-paginator #paginator [pageSize]="itensPorPagina" [pageSizeOptions]="[5,10,20]" style="display:none"></mat-paginator>
+    </div>
+
+    <router-outlet></router-outlet>
+  </div>
+</app-layout>

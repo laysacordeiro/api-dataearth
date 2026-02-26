@@ -1,0 +1,55 @@
+<div *ngIf="!carregando; else loading" class="dialog-container">
+
+  <!-- Título -->
+  <h1 class="titulo">{{ especie?.nome }}</h1>
+
+  <!-- Dados Gerais -->
+  <section class="section">
+    <h2>Dados Gerais</h2>
+
+    <p>
+      <strong>Nome Científico:</strong>
+      {{ especie?.nomeCientifico }}
+    </p>
+
+    <p>
+      <strong>Ano:</strong>
+      {{ especie?.ano }}
+    </p>
+
+    <p>
+      <strong>Descrição:</strong>
+      {{ especie?.descricao }}
+    </p>
+  </section>
+
+  <!-- Taxonomia -->
+  <section class="section" *ngIf="listaTaxonomiaCompleta.length > 0; else semTaxonomia">
+    <h2>Taxonomia</h2>
+
+    <div class="taxonomia-lista">
+      <p *ngFor="let t of listaTaxonomiaCompleta">
+        <strong>{{ t.nivel }}:</strong> {{ t.nome }}
+      </p>
+    </div>
+  </section>
+
+  <ng-template #semTaxonomia>
+    <p class="sem-taxonomia">
+      Esta espécie não possui taxonomia cadastrada.
+    </p>
+  </ng-template>
+
+  <!-- Botão -->
+  <div class="actions">
+    <button class="btn-fechar" (click)="fechar()">Fechar</button>
+  </div>
+
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</ng-template>

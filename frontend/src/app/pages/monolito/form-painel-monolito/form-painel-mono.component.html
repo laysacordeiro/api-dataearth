@@ -1,0 +1,89 @@
+<form [formGroup]="formMonolito" class="container">
+  <h1>Adicionar Monólito</h1>
+
+  <div class="form-wrapper">
+    <div class="section">
+      <h3>Dados de Espécie</h3>
+      
+      <label>Espécie:</label>
+      <select formControlName="especieId" (change)="onSelecionarEspecie($event)">
+        <option value="">Selecionar...</option>
+        <option *ngFor="let e of especiesFiltradas" [value]="e.id">
+          {{ e.nomeCientifico }}
+        </option>
+      </select>
+
+      <div *ngIf="carregandoTaxonomia" class="spinner-inline">
+        <small>Carregando taxonomia...</small>
+      </div>
+
+      <div *ngIf="especiesSelecionada && !carregandoTaxonomia" class="especie-card">
+        <h4>{{ especiesSelecionada.nomeCientifico }}</h4>
+
+        <div class="especie-info">
+          <span class="label">Nome Popular:</span>
+          <span>{{ especiesSelecionada.nome }}</span>
+        </div>
+
+        <div class="especie-info">
+          <span class="label">Ano:</span>
+          <span>{{ especiesSelecionada.ano }}</span>
+        </div>
+
+        <div class="especie-info" *ngIf="especiesSelecionada.descricao">
+          <span class="label">Descrição:</span>
+          <span>{{ especiesSelecionada.descricao }}</span>
+        </div>
+
+        <div class="taxonomia-section" *ngIf="listaTaxonomiaCompleta.length > 0">
+          <h4>Classificação Taxonômica</h4>
+          <div class="taxonomia-chain">
+            <div *ngFor="let t of listaTaxonomiaCompleta" class="taxonomia-item">
+              <span class="nivel">{{ t.nivel }}:</span>
+              <span class="nome">{{ t.nome }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Dados de Monólito</h3>
+
+      <label>Espécie Selecionada:</label>
+      <input type="text" [value]="especiesSelecionada?.nomeCientifico || 'Nenhuma selecionada'" readonly class="input-readonly" />
+
+      <label>Station Field Number:</label>
+      <input type="text" formControlName="station_field_number" />
+
+      <label>Sampling Number:</label>
+      <input type="number" formControlName="sampling_number" />
+
+      <label>Método:</label>
+      <input type="text" formControlName="metodo" />
+
+      <label>Profundidade do Solo:</label>
+      <input type="text" formControlName="profundidade_solo" />
+
+      <label>Data de Coleta:</label>
+      <div class="date-row">
+        <input type="number" formControlName="dia" placeholder="Dia" />
+        <input type="number" formControlName="mes" placeholder="Mês" />
+        <input type="number" formControlName="ano" placeholder="Ano" />
+      </div>
+
+      <label>Coletor:</label>
+      <input type="text" formControlName="collector" />
+
+      <label>Observações:</label>
+      <textarea formControlName="remarks" rows="3"></textarea>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="salvar" type="button" [disabled]="saving" (click)="salvarMonolito()">
+      {{ saving ? 'Salvando...' : 'Salvar' }}
+    </button>
+    <button class="cancelar" type="button" (click)="fechar()">Cancelar</button>
+  </div>
+</form>

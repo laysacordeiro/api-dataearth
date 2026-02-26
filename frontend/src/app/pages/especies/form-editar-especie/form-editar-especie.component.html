@@ -1,0 +1,68 @@
+<form [formGroup]="formEspecie" class="container">
+  <h1>Editar Espécie</h1>
+
+  <div class="form-wrapper">
+    <div class="section">
+      <h3>Dados Gerais</h3>
+
+      <label>Nome:</label>
+      <input type="text" formControlName="nome" />
+
+      <label>Nome Científico:</label>
+      <input type="text" formControlName="nomeCientifico" />
+
+      <label>Ano:</label>
+      <input type="number" formControlName="ano" />
+
+      <label>Descrição:</label>
+      <textarea rows="6" formControlName="descricao"></textarea>
+    </div>
+
+    <div class="section">
+      <h3>Taxonomia Completa</h3>
+
+      <ng-container *ngFor="let nivel of nivelsTaxonomia">
+        <div class="taxonomia-row" 
+             [class.sub-level]="nivel.startsWith('sub')"
+             *ngIf="taxonomias[nivel].nomeOriginal || !isConfirmado(nivel)">
+          
+          <label>{{ nivel === 'epiteto' ? 'Epíteto Específico' : (nivel | titlecase) }}:</label>
+          
+          <div class="input-with-button">
+            <input
+              type="text"
+              [formControlName]="nivel + 'Nome'"
+              [readonly]="isConfirmado(nivel)"
+              [placeholder]="'Digite o ' + nivel"
+            />
+
+            <button
+              type="button"
+              class="btn-ok"
+              *ngIf="!isConfirmado(nivel)"
+              (click)="confirmarTaxonomia(nivel)">
+              OK
+            </button>
+
+            <button
+              type="button"
+              class="btn-editar"
+              *ngIf="isConfirmado(nivel)"
+              (click)="editarTaxonomia(nivel)">
+              Editar
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="add-taxonomy-trigger" *ngIf="carregando === false">
+        <small>Níveis vazios estão ocultos. Para adicionar, verifique a hierarquia.</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="salvar" type="button" (click)="salvarEspecie()">Salvar Alterações</button>
+    <button class="cancelar" type="button" (click)="fechar()">Cancelar</button>
+  </div>
+</form>

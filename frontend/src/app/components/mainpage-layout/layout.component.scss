@@ -1,0 +1,76 @@
+.main-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f8f9fb;
+  font-family: 'Poppins', sans-serif;
+}
+
+.sidebar {
+  width: 250px; 
+  background-color: #125b61;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+
+  .logo {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+
+    img {
+      width: 180px;     // largura desejada
+      height: auto;    // mantém proporção
+      display: block;
+      margin: 0 auto;  // centraliza horizontalmente
+    }
+  }
+
+  .nav-menu { 
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+
+    button { 
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      padding: 15px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 12px; 
+
+      .icon {
+        width: 18px;   
+        height: 18px;   
+        object-fit: contain; 
+      }
+
+      i { 
+        margin-right: 10px;
+      }
+
+      &:hover {
+        background-color: lighten(#197c6d, 5%);
+      }
+
+      &.active {
+        background-color: #197c6d;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+/* Ajuste mínimo para que o conteúdo ocupe o espaço restante */
+.main-content {
+  flex: 1;            /* ocupa todo o espaço ao lado da sidebar */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;   /* scroll se o conteúdo ultrapassar a altura */
+  min-height: 0;      /* necessário para flex funcionar corretamente */
+}
