@@ -7,11 +7,13 @@ import { AuthService } from '../../services/auth.service';
 import { LoginService } from '../../services/login.service';
 import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     DefaultLoginLayoutComponent,
     PrimaryInputComponent
@@ -31,44 +33,34 @@ export class LoginComponent {
 
    submit() {
     if (this.loginForm.invalid) {
-      this.snackBar.open('Coloque os dados corretamente!', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top'
-      });
+      this.snackBar.open('Coloque os dados corretamente!', 'Close', { duration: 3000 });
       return;
     }
+
     const { username, password } = this.loginForm.value;
-    this.userService.login({ username, password })
-    .subscribe({
-        next: (res) => {
-  const token = res.replace('? Token: ', '').trim(); // remove prefixo da string
-  this.userService.savetoken(token);
 
-  if (this.userService.hasRole('ROLE_USER')) {
-    this.router.navigate(['/visitante']);
-  } else if (this.userService.hasRole('ROLE_RESC') || this.userService.hasRole('ROLE_ADMIN')) {
-    this.router.navigate(['/mainpage']);
-  }
-  this.snackBar.open('Sucesso!', 'Close', {
-    duration: 3000,
-    horizontalPosition: 'right',
-    verticalPosition: 'top',
-    panelClass: ['custom-snackbar']
-  });
-},
-
-        error: (err) => {
-            console.error(err);
-            this.snackBar.open('Nome de usuário ou senha estão incorretos.', 'Close', {
-            duration: 3000,
-            horizontalPosition: 'right',
-            verticalPosition: 'top',
-            panelClass: ['custom-snackbar']
-          });
+    this.authService.login({ username, password }).subscribe({
+      next: (res) => {
+        this.authService.setToken(res.token); // ✅ salva só o JWT puro
+        this.router.navigate(['/mainpage']);
+        
+        if (this.authService.hasRole('ROLE_USER')) {
+          this.router.navigate(['/visitante']);
+        } else if (
+          this.authService.hasRole('ROLE_RESC') ||
+          this.authService.hasRole('ROLE_ADMIN')
+        ) {
+          this.router.navigate(['/mainpage']);
         }
-    })
+
+        this.snackBar.open('Sucesso!', 'Close', { duration: 3000 });
+      },
+      error: () => {
+        this.snackBar.open('Usuário ou senha inválidos', 'Close', { duration: 3000 });
+      }
+    });
   }
+
   navigate() {
     console.log('=== NAVIGATE CHAMADO ===');
     console.log('Tentando navegar para /signup...');
@@ -83,3 +75,4 @@ export class LoginComponent {
     );
   }
 }
+

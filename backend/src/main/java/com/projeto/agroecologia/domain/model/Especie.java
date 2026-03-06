@@ -5,7 +5,6 @@ import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,10 +17,14 @@ public class Especie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
 
-    @Column(name = "nome_cientifico")
+    @Column(name = "nome_cientifico", nullable = false)
     private String nomeCientifico;
+
+    @Column(nullable = false, length = 255)
+    private String autor;
 
     private String ano;
 
@@ -32,7 +35,7 @@ public class Especie {
     @JoinColumn(name = "taxonomia_id")
     private Taxonomia taxonomia;
 
-    @ManyToMany(mappedBy = "especies")
+    @OneToMany(mappedBy = "especie")
     @JsonIgnore
-    private List<Monolito> monolitos;
+    private List<Tombo> tombos;
 }

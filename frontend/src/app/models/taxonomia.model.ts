@@ -5,3 +5,4 @@ export interface Taxonomia {
   nivel: string;
   parent?: Taxonomia | null;
 }
+

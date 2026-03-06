@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
@@ -8,45 +8,44 @@ import { CommonModule } from '@angular/common';
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
-  imports: [CommonModule]
+  imports: [CommonModule, RouterOutlet]
 })
 export class LayoutComponent {
   rotaAtiva: 'mainpage' | 'especies' = 'mainpage';
   isAdmin = false;
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    public userService: UserService
+    public authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    setTimeout(() => {
-      this.isAdmin = this.userService.getIsAdmin();
-      console.log('Admin detected:', this.isAdmin);
-    }, 0);
+    this.isAdmin = this.authService.isAdmin();
   }
-  irParaMainpage(): void {
-    this.rotaAtiva = 'mainpage';
+
+  irParaMainpage() {
     this.router.navigate(['/mainpage']);
   }
 
-  irParaEspecies(): void {
-    this.rotaAtiva = 'especies';
+  irParaEspecies() {
     this.router.navigate(['/especies']);
   }
-  irParaPainelAdmin(): void {
+
+  irParaPainelAdmin() {
     this.router.navigate(['/paineladmin']);
   }
-  irParaVisitante(): void {
+
+  irParaVisitante() {
     this.router.navigate(['/visitante']);
   }
+
   irParaMonolito(): void {
-    this.router.navigate(['/monolito']);
+    this.router.navigate(['/monolitos']);
   }
-  
-  logout(): void {
+
+  logout() {
     this.authService.logout();
+    localStorage.clear();
     this.router.navigate(['/login']);
   }
 }

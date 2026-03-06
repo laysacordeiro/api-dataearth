@@ -1,7 +1,11 @@
 package com.projeto.agroecologia.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,9 +19,18 @@ public class Monolito {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Column(nullable=false)
     private String stationFieldNumber;
+
+    @NotNull
+    @Column(nullable=false)
     private Integer samplingNumber;
+    
     private String metodo;
+
+    @NotBlank
+    @Column(nullable=false)
     private String profundidadeSolo;
 
     private Integer dia;
@@ -29,15 +42,6 @@ public class Monolito {
     @Column(columnDefinition = "TEXT")
     private String remarks;
 
-    @ManyToOne
-    @JoinColumn(name = "localizacao_id")
-    private Localizacao localizacao;
-
-    @ManyToMany
-    @JoinTable(
-        name = "monolito_especie",
-        joinColumns = @JoinColumn(name = "monolito_id"),
-        inverseJoinColumns = @JoinColumn(name = "especie_id")
-    )
-    private List<Especie> especies;
+    @OneToMany(mappedBy = "monolito", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tombo> tombos = new ArrayList<>();
 }

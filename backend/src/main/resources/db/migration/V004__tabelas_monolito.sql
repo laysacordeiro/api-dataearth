@@ -1,31 +1,20 @@
-CREATE TABLE localizacao (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-
-    localidade VARCHAR(255),
-    municipio VARCHAR(255),
-    estado VARCHAR(100),
-    pais VARCHAR(100),
-    proprietario_terreno VARCHAR(255)
-);
-
 CREATE TABLE monolito (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
 
-    station_field_number VARCHAR(100),
-    sampling_number INT,
-    metodo VARCHAR(50),
-    profundidade_solo VARCHAR(50),
+    -- Dados de Identificação (obrigatórios)
+    station_field_number VARCHAR(100) NOT NULL,
+    sampling_number INT NOT NULL,
+    metodo VARCHAR(50) NOT NULL,
+    profundidade_solo VARCHAR(50) NOT NULL,
 
-    dia INT,
-    mes INT,
-    ano INT,
-
-    collector VARCHAR(255),
+    -- Data e Coleta (obrigatórios)
+    dia INT NOT NULL,
+    mes INT NOT NULL,
+    ano INT NOT NULL,
+    collector VARCHAR(255) NOT NULL,
     remarks TEXT,
 
-    localizacao_id BIGINT,
-
-    CONSTRAINT fk_monolito_localizacao
-        FOREIGN KEY (localizacao_id)
-        REFERENCES localizacao(id)
+    -- Unicidade
+    CONSTRAINT uk_monolito_station_field_number UNIQUE (station_field_number)
 );
+

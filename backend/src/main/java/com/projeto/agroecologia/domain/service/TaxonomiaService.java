@@ -97,3 +97,4 @@ public Taxonomia atualizar(Long id, Taxonomia nova) {
         repository.deleteById(id);
     }
 }
+

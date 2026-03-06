@@ -34,19 +34,23 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/auth/**",
-                    "/taxonomias/**",
-                    "/especies/**",
-                    "/monolito/**",
-                    "/localizacao/**"
-                ).permitAll()
-                .anyRequest().authenticated()
-            )
 
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .requestMatchers("/auth/**").permitAll()
+
+                .requestMatchers("/taxonomias/**")
+                    .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+                .requestMatchers("/especies/**")
+                    .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+                .requestMatchers("/monolitos/**")
+                    .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+                .anyRequest()
+                    .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+            )
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); 
 
         return http.build();
     }

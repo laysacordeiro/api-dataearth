@@ -6,7 +6,7 @@
 
   h1 {
     text-align: center;
-    color: #00b76f;
+    color: #15991e;
     margin-bottom: 25px;
   }
 }
@@ -60,6 +60,93 @@
   }
 }
 
+// --- NOVOS AJUSTES PARA A SEÇÃO DE TOMBO ---
+
+.especie-card-flutuante {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f9f9f9; // Mesmo fundo do especie-card
+  border-radius: 8px;
+  border: 1px dashed #15991e; // Destaque suave para área de ação
+
+  h4 {
+    margin: 0 0 10px 0;
+    color: #15991e;
+    font-size: 15px;
+  }
+
+  .input-row-tombo {
+    display: flex;
+    gap: 10px;
+    .field {
+      flex: 1;
+    }
+  }
+
+  .btn-adicionar {
+    margin-top: 15px;
+    padding: 8px;
+    background-color: #15991e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.2s;
+
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+}
+
+.lista-adicionadas {
+  margin-top: 20px;
+  h4 {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .tombo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 8px 12px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    font-size: 13px;
+
+    .info {
+      strong { color: #15991e; }
+    }
+
+    .btn-remover {
+      background: #ffeded;
+      color: #dc3545;
+      border: 1px solid #ffc1c1;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+
+      &:hover {
+        background: #dc3545;
+        color: white;
+      }
+    }
+  }
+}
+
+// --- FIM DOS NOVOS AJUSTES ---
+
 .date-row {
   display: flex;
   gap: 10px;
@@ -73,11 +160,11 @@
   padding: 15px;
   background-color: #f9f9f9;
   border-radius: 8px;
-  border-left: 4px solid #00b76f;
+  border-left: 4px solid #15991e;
 
   h4 {
     margin: 0 0 10px 0;
-    color: #00b76f;
+    color: #15991e;
   }
 
   .especie-info {
@@ -87,6 +174,26 @@
       font-weight: 600;
       margin-right: 5px;
     }
+  }
+}
+
+.input-with-suffix {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  input {
+    flex: 1;
+  }
+
+  .numero-sufixo {
+    background: #eee;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #15991e;
+    border: 1px solid #999;
+    white-space: nowrap;
   }
 }
 
@@ -114,7 +221,7 @@
   gap: 5px;
 
   .nivel { font-weight: 700; color: #555; }
-  .nome { font-style: italic; color: #00b76f; }
+  .nome { font-style: italic; color: #15991e; }
 }
 
 .buttons {
@@ -134,7 +241,7 @@
   }
 
   .salvar {
-    background-color: #00b76f;
+    background-color: #15991e;
     color: white;
     &:hover:not(:disabled) { filter: brightness(0.9); }
     &:disabled { opacity: 0.5; cursor: not-allowed; }

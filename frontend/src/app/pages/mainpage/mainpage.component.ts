@@ -53,16 +53,16 @@ export class MainpageComponent implements OnInit, AfterViewInit {
     private authService: AuthService, 
     private router: Router, public userService: UserService
   ) { }
-roleMap: any = {
-  'ROLE_ADMIN': { label: 'Administrador', css: 'badge-red' }, 
-  'ROLE_RESC':  { label: 'Pesquisador Cientifico', css: 'badge-blue' },
-  'ROLE_USER':  { label: 'Visitante', css: 'badge-gray' }
-};
+
+  roleMap: any = {
+    'ROLE_ADMIN': { label: 'Administrador', css: 'badge-red' }, 
+    'ROLE_RESC':  { label: 'Pesquisador Cientifico', css: 'badge-blue' },
+    'ROLE_USER':  { label: 'Visitante', css: 'badge-gray' }
+  };
+
   ngOnInit() {
-    setTimeout(() => {
-      this.isAdmin = this.userService.getIsAdmin();
-      console.log('Admin detected:', this.isAdmin);
-    }, 0);
+    this.isAdmin = this.authService.isAdmin();
+    console.log('Admin detected:', this.isAdmin);
     this.carregarUsuarios();
   }
 
@@ -84,7 +84,7 @@ roleMap: any = {
     });
   }
 
- irParaMainpage(): void {
+  irParaMainpage(): void {
     this.rotaAtiva = 'mainpage';
     this.router.navigate(['/mainpage']);
   }
@@ -93,9 +93,11 @@ roleMap: any = {
     this.rotaAtiva = 'especies';
     this.router.navigate(['/especies']);
   }
+
   isUserAdmin(user: User): boolean {
-  return user.isAdmin;
-}
+    return user.isAdmin;
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
@@ -104,9 +106,10 @@ roleMap: any = {
   novoUsuario(): void {
     this.router.navigate(['/novo-usuario']); 
   }
+
   getRoleStyle(roleName: string) {
-  return this.roleMap[roleName] || { label: roleName, css: 'badge-default' };
-}
+    return this.roleMap[roleName] || { label: roleName, css: 'badge-default' };
+  }
 
   editar(usuario: User): void {
     console.log('Editar usuário', usuario);
@@ -122,3 +125,4 @@ roleMap: any = {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }
+

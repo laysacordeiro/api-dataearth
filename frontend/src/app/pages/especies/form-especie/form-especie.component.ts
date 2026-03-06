@@ -253,3 +253,4 @@ export class FormEspecieComponent implements OnInit, AfterViewInit {
   }
   toggleSub(tipo: string) { this.mostrarSub[tipo] = !this.mostrarSub[tipo]; }
 }
+

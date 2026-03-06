@@ -102,7 +102,7 @@
 
       <div class="label-row">
         <label>Família:</label>
-        <span class="icone-add" (click)="toggleSub('familia')">{{ mostrarSub.familia ? '-' : '+' }}</span>
+        <span class="icone-add" (click)="toggleSub('subfamilia')">{{ mostrarSub.subfamilia ? '-' : '+' }}</span>
       </div>
       <select formControlName="familiaId" (change)="onSelectChange($event, 'familia')">
         <option value="">Selecionar...</option>
@@ -110,14 +110,14 @@
         <option value="outro">Outro...</option>
       </select>
       <input *ngIf="mostrarInput.familia" type="text" formControlName="familiaNome" placeholder="Digite o nome da nova Família" class="input-novo" />
-      <div class="sub-campo" *ngIf="mostrarSub.familia">
+      <div class="sub-campo" *ngIf="mostrarSub.subfamilia">
         <label>Subfamília:</label>
         <input type="text" formControlName="subfamiliaNome" placeholder="Nome da Subfamília">
       </div>
 
       <div class="label-row">
         <label>Gênero:</label>
-        <span class="icone-add" (click)="toggleSub('genero')">{{ mostrarSub.genero ? '-' : '+' }}</span>
+        <span class="icone-add" (click)="toggleSub('subgenero')">{{ mostrarSub.subgenero ? '-' : '+' }}</span>
       </div>
       <select formControlName="generoId" (change)="onSelectChange($event, 'genero')">
         <option value="">Selecionar...</option>
@@ -125,7 +125,7 @@
         <option value="outro">Outro...</option>
       </select>
       <input *ngIf="mostrarInput.genero" type="text" formControlName="generoNome" placeholder="Digite o nome do novo Gênero" class="input-novo" />
-      <div class="sub-campo" *ngIf="mostrarSub.genero">
+      <div class="sub-campo" *ngIf="mostrarSub.subgenero">
         <label>Subgênero:</label>
         <input type="text" formControlName="subgeneroNome" placeholder="Nome do Subgênero">
       </div>

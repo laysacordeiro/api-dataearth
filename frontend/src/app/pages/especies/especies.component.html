@@ -1,25 +1,199 @@
 <app-layout>
   <div class="content">
-
     <div class="card">
+
       <div class="card-header">
         <h2>Lista de Espécies</h2>
         <div class="spaceflex">
-        <button mat-raised-button class="btn-nova" (click)="abrirCadastroEspecie()">
-          Nova Espécie
-        </button>
+          <button mat-raised-button class="btn-nova" (click)="abrirCadastroEspecie()">
+            Nova Espécie
+          </button>
         </div>
       </div>
 
-      <div class="search-bar">
-        <input
-          matInput
-          placeholder="Pesquisar espécie..."
-          [(ngModel)]="searchTerm"
-          (input)="aplicarFiltro($event)" />
-        <i class="fa fa-search"></i>
+      <!-- Barra de filtros -->
+      <div class="filtros-bar">
+        <div class="search-pill">
+          <input
+            type="text"
+            placeholder="Pesquisar nome (popular ou científico)..."
+            [ngModel]="searchTerm"
+            (ngModelChange)="onSearchChange($event)"
+          />
+          <mat-icon class="search-icon">search</mat-icon>
+        </div>
+
+        <button class="filtro-pill" mat-button [matMenuTriggerFor]="menuTaxonomia">
+          <span>Taxonomia</span>
+          <mat-icon class="drop">arrow_drop_down</mat-icon>
+        </button>
+
+        <button class="filtro-pill" mat-button [matMenuTriggerFor]="menuMonolito">
+          <span>Monólito</span>
+          <mat-icon class="drop">arrow_drop_down</mat-icon>
+        </button>
+
+        <button class="filtro-pill" mat-button [matMenuTriggerFor]="menuAno">
+          <span>Ano</span>
+          <mat-icon class="drop">arrow_drop_down</mat-icon>
+        </button>
+
+        <button class="filtro-pill" mat-button [matMenuTriggerFor]="menuAutor">
+          <span>Autor</span>
+          <mat-icon class="drop">arrow_drop_down</mat-icon>
+        </button>
+
+        <button class="btn-limpar" mat-stroked-button (click)="limparFiltros()">
+          Limpar filtros
+        </button>
       </div>
 
+      <!-- TAXONOMIA -->
+      <mat-menu #menuTaxonomia="matMenu" class="menu-filtro">
+        <div class="menu-taxonomia" (click)="$event.stopPropagation()">
+
+          <div class="menu-title">Taxonomia</div>
+
+          <div class="tax-scroll">
+            <div class="tax-section" *ngFor="let level of taxonomyLevels">
+              <div class="tax-header">
+                <span class="tax-label">{{ level.label }}</span>
+
+                <button
+                  type="button"
+                  class="tax-toggle"
+                  (click)="toggleTaxLevel(level.key); $event.stopPropagation()"
+                  aria-label="Expandir/Fechar"
+                >
+                  <span class="toggle-symbol">
+                    {{ expandedTaxLevels[level.key] ? '−' : '+' }}
+                  </span>
+                </button>
+              </div>
+
+              <div class="tax-options" *ngIf="expandedTaxLevels[level.key]">
+                <button
+                  type="button"
+                  class="tax-pill"
+                  *ngFor="let opt of (taxOptions[level.key] || [])"
+                  [class.selected]="filters.taxonomia[level.key] === opt"
+                  (click)="selectTaxOption(level.key, opt); $event.stopPropagation()"
+                >
+                  {{ opt }}
+                </button>
+
+                <div class="tax-empty" *ngIf="(taxOptions[level.key] || []).length === 0">
+                  Sem opções
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="menu-footer">
+            <button mat-stroked-button class="mini" (click)="limparTaxonomia(); $event.stopPropagation()">
+              Limpar Taxonomia
+            </button>
+          </div>
+        </div>
+      </mat-menu>
+
+      <!-- MONÓLITO -->
+      <mat-menu #menuMonolito="matMenu" class="menu-filtro">
+        <div class="menu-simple" (click)="$event.stopPropagation()">
+          <div class="menu-title">Monólito</div>
+
+          <div class="simple-list">
+            <button
+              type="button"
+              class="simple-item"
+              [class.selected]="!filters.monolito"
+              (click)="setMonolito(null); $event.stopPropagation()"
+            >
+              Todos
+            </button>
+
+            <button
+              type="button"
+              class="simple-item"
+              *ngFor="let m of monolitoOptions"
+              [class.selected]="filters.monolito === m"
+              (click)="setMonolito(m); $event.stopPropagation()"
+            >
+              {{ m }}
+            </button>
+
+            <div class="tax-empty" *ngIf="monolitoOptions.length === 0">
+              Sem dados de monólito
+            </div>
+          </div>
+        </div>
+      </mat-menu>
+
+      <!-- ANO -->
+      <mat-menu #menuAno="matMenu" class="menu-filtro">
+        <div class="menu-simple" (click)="$event.stopPropagation()">
+          <div class="menu-title">Ano</div>
+
+          <div class="simple-list">
+            <button
+              type="button"
+              class="simple-item"
+              [class.selected]="!filters.ano"
+              (click)="setAno(null); $event.stopPropagation()"
+            >
+              Todos
+            </button>
+
+            <button
+              type="button"
+              class="simple-item"
+              *ngFor="let a of anoOptions"
+              [class.selected]="filters.ano === a"
+              (click)="setAno(a); $event.stopPropagation()"
+            >
+              {{ a }}
+            </button>
+
+            <div class="tax-empty" *ngIf="anoOptions.length === 0">
+              Sem anos
+            </div>
+          </div>
+        </div>
+      </mat-menu>
+
+      <!-- AUTOR -->
+      <mat-menu #menuAutor="matMenu" class="menu-filtro">
+        <div class="menu-simple" (click)="$event.stopPropagation()">
+          <div class="menu-title">Autor</div>
+
+          <div class="simple-list">
+            <button
+              type="button"
+              class="simple-item"
+              [class.selected]="!filters.autor"
+              (click)="setAutor(null); $event.stopPropagation()"
+            >
+              Todos
+            </button>
+
+            <button
+              type="button"
+              class="simple-item"
+              *ngFor="let au of autorOptions"
+              [class.selected]="filters.autor === au"
+              (click)="setAutor(au); $event.stopPropagation()"
+            >
+              {{ au }}
+            </button>
+
+            <div class="tax-empty" *ngIf="autorOptions.length === 0">
+              Sem autores
+            </div>
+          </div>
+        </div>
+      </mat-menu>
+
+      <!-- Tabela -->
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
         <ng-container matColumnDef="id">
@@ -61,7 +235,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 
-      <!-- Paginação manual (visual antigo) -->
+      <!-- Paginação -->
       <div class="pagination">
         <span>Itens por página:</span>
         <select [(ngModel)]="itensPorPagina" (change)="alterarItensPorPagina()">
@@ -70,8 +244,12 @@
         <span>{{ dataSource.filteredData.length }} total</span>
       </div>
 
-      <!-- Paginator oculto para MatTable -->
-      <mat-paginator #paginator [pageSize]="itensPorPagina" [pageSizeOptions]="[5,10,20]" style="display:none"></mat-paginator>
+      <mat-paginator
+        #paginator
+        [pageSize]="itensPorPagina"
+        [pageSizeOptions]="[5,10,20]"
+        style="display:none"
+      ></mat-paginator>
 
     </div>
 

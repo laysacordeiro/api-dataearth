@@ -31,3 +31,4 @@ export class EspecieService {
     return this.http.delete<void>(`${this.apiUrl}/deletar/${id}`)
   }
 }
+

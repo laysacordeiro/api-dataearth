@@ -40,9 +40,16 @@ import { Monolito } from '../../models/monolito.model';
 export class MonolitoComponent implements OnInit, AfterViewInit {
   searchTerm: string = '';
   itensPorPagina: number = 5;
+  rotaAtiva: 'monolitos' = 'monolitos';
 
   monolitos: Monolito[] = [];
-  displayedColumns: string[] = ['station_field_number', 'sampling_number', 'metodo', 'collector', 'acoes'];
+  displayedColumns: string[] = [
+    'stationFieldNumber',
+    'profundidadeSolo',
+    'collector',
+    'dataColeta',
+    'acoes'
+  ];
   dataSource = new MatTableDataSource<Monolito>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -62,6 +69,15 @@ export class MonolitoComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
+  formatarData(m: Monolito): string {
+    if (!m?.dia || !m?.mes || !m?.ano) return '-';
+
+    const dia = String(m.dia).padStart(2, '0');
+    const mes = String(m.mes).padStart(2, '0');
+
+    return `${dia}/${mes}/${m.ano}`;
+  }
+
   alterarItensPorPagina() {
     if (this.paginator) {
       this.paginator._changePageSize(this.itensPorPagina);
@@ -78,7 +94,7 @@ export class MonolitoComponent implements OnInit, AfterViewInit {
       error: (e) => console.error('Erro ao carregar monólitos:', e)
     });
   }
-
+ 
   abrirCadastroMonolito(): void {
     const dialogRef = this.dialog.open(FormMonolitoComponent, {
       width: '70vw',

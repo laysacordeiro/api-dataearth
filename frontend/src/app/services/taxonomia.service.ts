@@ -34,3 +34,5 @@ export class TaxonomiaService {
     return this.http.delete<void>(`${this.apiUrl}/deletar/${id}`)
   }
 }
+
+

@@ -1,59 +1,94 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; // 1. Importar HttpClient
-import { Observable, of } from 'rxjs'; // 2. Importar Observable e of
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-export interface Usuario { 
-  id: number;
-  fullName: string; // Nome está vindo como 'fullName' do backend, não 'nome'
-  email: string;
-  role: string;
+interface LoginRequest {
+  username: string;
+  password: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root'
 })
-
 export class AuthService {
-    // ⚠️ ATENÇÃO: Corrigindo o apiUrl para o endpoint base da sua API
-    private apiUrl = 'http://localhost:8080/api/auth'; 
 
-    private readonly TOKEN_KEY = 'auth-token';
-    private readonly USERNAME_KEY = 'username';
-    private readonly EMAIL_KEY = 'user-email';
+  private readonly API_URL = 'http://localhost:8080/auth';
+  private readonly TOKEN_KEY = 'auth-token';
 
-    constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-    // ✅ CORREÇÃO: Fazendo a chamada HTTP real para o endpoint /users
-    listarTodos(): Observable<Usuario[]> {
-        // O endpoint completo é: http://localhost:8080/api/auth/users
-        return this.http.get<Usuario[]>(`${this.apiUrl}/users`);
+  // 🔐 LOGIN
+  login(request: LoginRequest): Observable<{ token: string }> {
+    const body = new URLSearchParams();
+    body.set('username', request.username);
+    body.set('password', request.password);
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
+    return this.http.post<{ token: string }>(
+      `${this.API_URL}/login`,
+      body.toString(),
+      { headers }
+    );
+  }
+
+
+  // 💾 TOKEN
+  setToken(token: string): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  // 🚪 LOGOUT
+  logout(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+  }
+
+  // ✅ STATUS
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  // 🔍 JWT PAYLOAD
+  private getPayload(): any | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch {
+      return null;
     }
+  }
 
-    setToken(token: string) {
-        sessionStorage.setItem(this.TOKEN_KEY, token);
-    }
+  // 👤 USUÁRIO
+  getUsername(): string | null {
+    const payload = this.getPayload();
+    return payload?.sub || payload?.username || null;
+  }
 
-    getToken(): string | null {
-        return sessionStorage.getItem(this.TOKEN_KEY);
-    }
+  // 🛂 ROLES
+  hasRole(role: string): boolean {
+    const payload = this.getPayload();
+    if (!payload) return false;
 
-    setUsername(username: string) {
-        sessionStorage.setItem(this.USERNAME_KEY, username);
-    }
+    const roles: string[] =
+      payload.roles ||
+      payload.authorities ||
+      [];
 
-    getUsername(): string | null {
-        return sessionStorage.getItem(this.USERNAME_KEY);
-    }
+    return roles.includes(role) || roles.includes(role.replace('ROLE_', ''));
+  }
 
-    setUserEmail(email: string) {
-        sessionStorage.setItem(this.EMAIL_KEY, email);
-    }
+  isAdmin(): boolean {
+    return this.hasRole('ROLE_ADMIN');
+  }
 
-    getUserEmail(): string | null {
-        return sessionStorage.getItem(this.EMAIL_KEY);
-    }
-
-    logout() {
-        sessionStorage.clear();
-    }
+  isResearcher(): boolean {
+    return this.hasRole('ROLE_RESC');
+  }
 }
+

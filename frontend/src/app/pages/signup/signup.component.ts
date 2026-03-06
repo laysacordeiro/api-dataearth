@@ -1,16 +1,15 @@
 import { Component } from '@angular/core';
-import { DefaultLoginLayoutComponent } from '../../components/default-login-layout/default-login-layout.component';
-import { ReactiveFormsModule, Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { PrimaryInputComponent } from '../../components/primary-input/primary-input.component';
 import { Router } from '@angular/router';
-import { SignupService } from '../../services/signup.service';
-import { UserService } from '../../services/user.service';
+import { ReactiveFormsModule, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { DefaultLoginLayoutComponent } from '../../components/default-login-layout/default-login-layout.component';
+import { PrimaryInputComponent } from '../../components/primary-input/primary-input.component';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  providers: [SignupService],
   imports: [
     ReactiveFormsModule,
     DefaultLoginLayoutComponent,
@@ -20,16 +19,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent {
-  signupForm!: FormGroup;
+
+  signupForm: FormGroup;
 
   constructor(
     private router: Router,
-    private signupService: SignupService,
     private userService: UserService,
     private snackBar: MatSnackBar,
     private fb: FormBuilder
   ) {
-        this.signupForm = this.fb.group({
+    this.signupForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(2)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
@@ -41,8 +40,7 @@ export class SignupComponent {
       this.snackBar.open('⚠️ Preencha todos os campos corretamente.', 'Fechar', {
         duration: 3000,
         horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['custom-snackbar']
+        verticalPosition: 'top'
       });
       return;
     }
@@ -53,35 +51,35 @@ export class SignupComponent {
       this.snackBar.open('⚠️ As senhas não coincidem.', 'Fechar', {
         duration: 3000,
         horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['custom-snackbar']
+        verticalPosition: 'top'
       });
       return;
     }
+
+    // 🔒 regra mantida
     const roles = ['ROLE_USER'];
-    this.userService.RegisterUser({ username, password, roles }).subscribe({
-        next: (res) => {
-      this.snackBar.open(res, 'Fechar', {
-        duration: 3000,
-        horizontalPosition: 'right',
-        verticalPosition: 'top',
-        panelClass: ['custom-snackbar']
-      });
-      this.router.navigate(['/forum']);
-    },
+
+    this.userService.register({ username, password, roles }).subscribe({
+      next: (res) => {
+        this.snackBar.open(res, 'Fechar', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top'
+        });
+        this.router.navigate(['/login']);
+      },
       error: (err) => {
         console.error(err);
         this.snackBar.open('❌ Erro ao registrar. Tente novamente.', 'Fechar', {
           duration: 3000,
           horizontalPosition: 'right',
-          verticalPosition: 'top',
-          panelClass: ['custom-snackbar']
+          verticalPosition: 'top'
         });
       }
     });
   }
 
   navigate() {
-    this.router.navigate(["/login"]);
+    this.router.navigate(['/login']);
   }
 }

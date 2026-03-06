@@ -1,25 +1,49 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 import { MatPaginator } from '@angular/material/paginator';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+
 import { FormTaxonomiaComponent } from './form-taxonomia/form-taxonomia.component';
 import { EspecieService } from '../../services/especie.service';
 import { Especie } from '../../models/especie.model';
 import { RouterModule } from '@angular/router';
+
 import { FormEspecieComponent } from './form-especie/form-especie.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormEditarEspecieComponent } from './form-editar-especie/form-editar-especie.component';
 import { LayoutComponent } from '../../components/mainpage-layout/layout.component';
-import { FormMonolitoComponent } from '../monolito/form-painel-monolito/form-painel-mono.component';
+
+import { TaxonomiaService } from '../../services/taxonomia.service';
+
+type TaxLevelKey =
+  | 'reino'
+  | 'filo'
+  | 'classe'
+  | 'subclasse'
+  | 'infraclasse'
+  | 'ordem'
+  | 'subordem'
+  | 'infraordem'
+  | 'parvordem'
+  | 'familia'
+  | 'subfamilia'
+  | 'genero'
+  | 'subgenero'
+  | 'epiteto';
 
 @Component({
   selector: 'app-especies',
@@ -37,6 +61,8 @@ import { FormMonolitoComponent } from '../monolito/form-painel-monolito/form-pai
     MatCardModule,
     MatTableModule,
     MatPaginatorModule,
+    MatMenuModule,
+    MatTooltipModule,
     LayoutComponent
   ],
 })
@@ -51,26 +77,129 @@ export class EspecieComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  // ✅ filtros
+  filters: {
+    search: string;
+    ano: number | null;
+    autor: string | null;
+    monolito: string | null;
+    taxonomia: Record<TaxLevelKey, string | null>;
+  } = {
+    search: '',
+    ano: null,
+    autor: null,
+    monolito: null,
+    taxonomia: {
+      reino: null,
+      filo: null,
+      classe: null,
+      subclasse: null,
+      infraclasse: null,
+      ordem: null,
+      subordem: null,
+      infraordem: null,
+      parvordem: null,
+      familia: null,
+      subfamilia: null,
+      genero: null,
+      subgenero: null,
+      epiteto: null,
+    }
+  };
+
+  anoOptions: number[] = [];
+  autorOptions: string[] = [];
+  monolitoOptions: string[] = [];
+
+  // ✅ níveis do menu (ajuste apiNivel se seu backend usa outro texto)
+  taxonomyLevels: Array<{ key: TaxLevelKey; label: string; apiNivel: string }> = [
+    { key: 'reino',       label: 'Reino',       apiNivel: 'REINO' },
+    { key: 'filo',        label: 'Filo',        apiNivel: 'FILO' },
+    { key: 'classe',      label: 'Classe',      apiNivel: 'CLASSE' },
+    { key: 'subclasse',   label: 'Subclasse',   apiNivel: 'SUBCLASSE' },
+    { key: 'infraclasse', label: 'Infraclasse', apiNivel: 'INFRACLASSE' },
+    { key: 'ordem',       label: 'Ordem',       apiNivel: 'ORDEM' },
+    { key: 'subordem',    label: 'Subordem',    apiNivel: 'SUBORDEM' },
+    { key: 'infraordem',  label: 'Infraordem',  apiNivel: 'INFRAORDEM' },
+    { key: 'parvordem',   label: 'Parvordem',   apiNivel: 'PARVORDEM' },
+    { key: 'familia',     label: 'Família',     apiNivel: 'FAMILIA' },
+    { key: 'subfamilia',  label: 'Subfamília',  apiNivel: 'SUBFAMILIA' },
+    { key: 'genero',      label: 'Gênero',      apiNivel: 'GENERO' },
+    { key: 'subgenero',   label: 'Subgênero',   apiNivel: 'SUBGENERO' },
+    { key: 'epiteto',     label: 'Epíteto',     apiNivel: 'EPITETO' },
+  ];
+
+  expandedTaxLevels: Record<TaxLevelKey, boolean> = {
+    reino: true,
+    filo: false,
+    classe: false,
+    subclasse: false,
+    infraclasse: false,
+    ordem: false,
+    subordem: false,
+    infraordem: false,
+    parvordem: false,
+    familia: false,
+    subfamilia: false,
+    genero: false,
+    subgenero: false,
+    epiteto: false,
+  };
+
+  taxOptions: Record<TaxLevelKey, string[]> = {
+    reino: [],
+    filo: [],
+    classe: [],
+    subclasse: [],
+    infraclasse: [],
+    ordem: [],
+    subordem: [],
+    infraordem: [],
+    parvordem: [],
+    familia: [],
+    subfamilia: [],
+    genero: [],
+    subgenero: [],
+    epiteto: [],
+  };
+
+  private taxLoaded: Record<TaxLevelKey, boolean> = {
+    reino: false,
+    filo: false,
+    classe: false,
+    subclasse: false,
+    infraclasse: false,
+    ordem: false,
+    subordem: false,
+    infraordem: false,
+    parvordem: false,
+    familia: false,
+    subfamilia: false,
+    genero: false,
+    subgenero: false,
+    epiteto: false,
+  };
+
   constructor(
     private especieService: EspecieService,
+    private taxonomiaService: TaxonomiaService,
     private router: Router,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
+    this.setupFilterPredicate();
     this.carregarEspecies();
+    this.loadTaxOptions('reino');
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
 
-  // Alterar itens por página
   alterarItensPorPagina() {
-    if (this.paginator) {
-      this.paginator._changePageSize(this.itensPorPagina); // 🔹 atualiza corretamente
-    }
+    if (this.paginator) this.paginator._changePageSize(this.itensPorPagina);
   }
 
   carregarEspecies(): void {
@@ -78,10 +207,152 @@ export class EspecieComponent implements OnInit, AfterViewInit {
       next: (data) => {
         this.especies = data;
         this.dataSource.data = data;
-        this.aplicarFiltro({ target: { value: this.searchTerm } } as any);
+
+        this.buildMenuOptions(data);
+        this.applyAllFilters();
       },
-      error: (e) => {
-        console.error('Erro ao carregar espécies:', e);
+      error: (e) => console.error('Erro ao carregar espécies:', e)
+    });
+  }
+
+  onSearchChange(value: string) {
+    this.searchTerm = value;
+    this.filters.search = value ?? '';
+    this.applyAllFilters();
+  }
+
+  setAno(ano: number | null) {
+    this.filters.ano = ano;
+    this.applyAllFilters();
+  }
+
+  setAutor(autor: string | null) {
+    this.filters.autor = autor;
+    this.applyAllFilters();
+  }
+
+  setMonolito(monolito: string | null) {
+    this.filters.monolito = monolito;
+    this.applyAllFilters();
+  }
+
+  toggleTaxLevel(level: TaxLevelKey) {
+    this.expandedTaxLevels[level] = !this.expandedTaxLevels[level];
+    if (this.expandedTaxLevels[level]) this.loadTaxOptions(level);
+  }
+
+  selectTaxOption(level: TaxLevelKey, value: string) {
+    this.filters.taxonomia[level] = (this.filters.taxonomia[level] === value) ? null : value;
+    this.applyAllFilters();
+  }
+
+  limparTaxonomia() {
+    (Object.keys(this.filters.taxonomia) as TaxLevelKey[]).forEach(k => this.filters.taxonomia[k] = null);
+    this.applyAllFilters();
+  }
+
+  limparFiltros() {
+    this.searchTerm = '';
+    this.filters.search = '';
+    this.filters.ano = null;
+    this.filters.autor = null;
+    this.filters.monolito = null;
+    this.limparTaxonomia();
+    this.applyAllFilters();
+  }
+
+  private setupFilterPredicate() {
+    this.dataSource.filterPredicate = (e: Especie, raw: string) => {
+      let f: any;
+      try { f = JSON.parse(raw || '{}'); } catch { f = {}; }
+
+      const nome = (e.nome ?? '').toString().toLowerCase();
+      const cient = ((e as any).nomeCientifico ?? '').toString().toLowerCase();
+
+      const search = (f.search ?? '').toString().trim().toLowerCase();
+      const okSearch = !search || nome.includes(search) || cient.includes(search);
+
+      const okAno = (f.ano == null) ? true : Number((e as any).ano) === Number(f.ano);
+
+      const autor = this.getAutorFromEspecie(e).toLowerCase();
+      const okAutor = !f.autor ? true : autor === String(f.autor).toLowerCase();
+
+      const monolito = this.getMonolitoFromEspecie(e).toLowerCase();
+      const okMonolito = !f.monolito ? true : monolito === String(f.monolito).toLowerCase();
+
+      // ✅ Taxonomia diretamente em especie.reino/filo/...
+      const okTax = (Object.keys(f.taxonomia || {}) as TaxLevelKey[]).every((k) => {
+        const selected = f.taxonomia?.[k];
+        if (!selected) return true;
+
+        const fieldValue = ((e as any)?.[k] ?? '').toString().toLowerCase();
+        return fieldValue === String(selected).toLowerCase();
+      });
+
+      return okSearch && okAno && okAutor && okMonolito && okTax;
+    };
+  }
+
+  private applyAllFilters() {
+    this.dataSource.filter = JSON.stringify(this.filters);
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
+  }
+
+  private buildMenuOptions(data: Especie[]) {
+    // Ano
+    const anos = new Set<number>();
+    data.forEach(e => {
+      const a = Number((e as any).ano);
+      if (!Number.isNaN(a)) anos.add(a);
+    });
+    this.anoOptions = Array.from(anos).sort((a, b) => b - a);
+
+    // Autor (ajuste se campo for diferente)
+    const autores = new Set<string>();
+    data.forEach(e => {
+      const au = this.getAutorFromEspecie(e).trim();
+      if (au) autores.add(au);
+    });
+    this.autorOptions = Array.from(autores).sort((a, b) => a.localeCompare(b));
+
+    // Monólito (ajuste se campo for diferente)
+    const monos = new Set<string>();
+    data.forEach(e => {
+      const m = this.getMonolitoFromEspecie(e).trim();
+      if (m) monos.add(m);
+    });
+    this.monolitoOptions = Array.from(monos).sort((a, b) => a.localeCompare(b));
+  }
+
+  private getAutorFromEspecie(e: Especie): string {
+    return String((e as any).autor ?? (e as any).collector ?? '');
+  }
+
+  private getMonolitoFromEspecie(e: Especie): string {
+    const m = (e as any).monolito;
+    if (m && typeof m === 'object') return String(m.id ?? m.nome ?? '');
+    return String((e as any).monolitoId ?? '');
+  }
+
+  private loadTaxOptions(level: TaxLevelKey) {
+    if (this.taxLoaded[level]) return;
+
+    const cfg = this.taxonomyLevels.find(l => l.key === level);
+    if (!cfg) return;
+
+    this.taxonomiaService.filtrarPorNivel(cfg.apiNivel).subscribe({
+      next: (list) => {
+        this.taxOptions[level] = (list || [])
+          .map((t: any) => String(t?.nome ?? t?.descricao ?? t?.valor ?? ''))
+          .filter((x: string) => !!x)
+          .sort((a: string, b: string) => a.localeCompare(b));
+
+        this.taxLoaded[level] = true;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar taxonomia por nível:', level, err);
+        this.taxOptions[level] = [];
+        this.taxLoaded[level] = true;
       }
     });
   }
@@ -148,16 +419,6 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     });
   }
 
-  aplicarFiltro(event: Event) {
-    const valor = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = valor.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
-  // Navegação
   irParaMainpage() {
     this.rotaAtiva = 'mainpage';
     this.router.navigate(['/mainpage']);

@@ -2,6 +2,7 @@ package com.projeto.agroecologia.domain.model;
 
 import com.projeto.agroecologia.domain.enume.RoleName;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,11 +20,17 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, unique = true)
     private RoleName name;
-        public Role() {}
 
-    public Role(String name) {
-        this.name = RoleName.valueOf(name);
+    public Role() {}
+
+    public Role(RoleName name) {
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public RoleName getName() {

@@ -3,46 +3,62 @@
 
   <div class="form-wrapper">
     <div class="section">
-      <h3>Dados de Espécie</h3>
+      <h3>Seleção de Espécies</h3>
       
-      <label>Espécie:</label>
-      <select formControlName="especieId" (change)="onSelecionarEspecie($event)">
-        <option value="">Selecionar...</option>
-        <option *ngFor="let e of especiesFiltradas" [value]="e.id">
-          {{ e.nomeCientifico }}
-        </option>
-      </select>
-
-      <div *ngIf="carregandoTaxonomia" class="spinner-inline">
-        <small>Carregando taxonomia...</small>
+      <div class="select-group">
+        <label>Espécie:</label>
+        <select formControlName="especieId" (change)="onSelecionarEspecie($event)">
+          <option value="">Selecionar...</option>
+          <option *ngFor="let e of especiesFiltradas" [value]="e.id">{{ e.nomeCientifico }}</option>
+        </select>
       </div>
 
-      <div *ngIf="especiesSelecionada && !carregandoTaxonomia" class="especie-card">
-        <h4>{{ especiesSelecionada.nomeCientifico }}</h4>
-
-        <div class="especie-info">
-          <span class="label">Nome Popular:</span>
-          <span>{{ especiesSelecionada.nome }}</span>
-        </div>
-
-        <div class="especie-info">
-          <span class="label">Ano:</span>
-          <span>{{ especiesSelecionada.ano }}</span>
-        </div>
-
-        <div class="especie-info" *ngIf="especiesSelecionada.descricao">
-          <span class="label">Descrição:</span>
-          <span>{{ especiesSelecionada.descricao }}</span>
-        </div>
-
-        <div class="taxonomia-section" *ngIf="listaTaxonomiaCompleta.length > 0">
-          <h4>Classificação Taxonômica</h4>
-          <div class="taxonomia-chain">
-            <div *ngFor="let t of listaTaxonomiaCompleta" class="taxonomia-item">
-              <span class="nivel">{{ t.nivel }}:</span>
-              <span class="nome">{{ t.nome }}</span>
+      <div *ngIf="especiesSelecionada">
+        
+        <div class="especie-card-flutuante">
+          <h4>Configurar Registro: {{ especiesSelecionada.nomeCientifico }}</h4>
+          <div class="input-row-tombo">
+            <div class="field">
+              <label>Abundância:</label>
+              <input type="number" formControlName="abundancia" placeholder="Qtd">
+            </div>
+            <div class="field">
+              <label>Identificador:</label>
+              <div class="input-with-suffix">
+                <input type="text" formControlName="identificador" placeholder="Ex: Tombo">
+                <span class="numero-sufixo">#{{ proximoNumero }}</span>
+              </div>
             </div>
           </div>
+          <button type="button" class="btn-adicionar" (click)="adicionarEspecieALista()">
+            + Adicionar à Lista
+          </button>
+        </div>
+
+        <div class="especie-card" *ngIf="!carregandoTaxonomia">
+          <h4>Dados Informativos</h4>
+          <div class="especie-info"><span class="label">Nome Popular:</span> {{ especiesSelecionada.nome }}</div>
+          <div class="especie-info"><span class="label">Ano:</span> {{ especiesSelecionada.ano }}</div>
+          
+          <div class="taxonomia-section" *ngIf="listaTaxonomiaCompleta.length > 0">
+            <h4>Classificação</h4>
+            <div class="taxonomia-chain">
+              <div *ngFor="let t of listaTaxonomiaCompleta" class="taxonomia-item">
+                <span class="nivel">{{ t.nivel }}:</span> <span class="nome">{{ t.nome }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lista-adicionadas" *ngIf="listaDeTombos.length > 0">
+        <h4>Espécies no Monólito:</h4>
+        <div *ngFor="let item of listaDeTombos; let i = index" class="tombo-item">
+          <div class="info">
+            <strong>{{ item.nomeCientifico }}</strong>
+            <span>({{ item.abundancia }} unid. - {{ item.identificador }})</span>
+          </div>
+          <button type="button" class="btn-remover" (click)="removerEspecieDaLista(i)">×</button>
         </div>
       </div>
     </div>
@@ -50,27 +66,20 @@
     <div class="section">
       <h3>Dados de Monólito</h3>
 
-      <label>Espécie Selecionada:</label>
-      <input type="text" [value]="especiesSelecionada?.nomeCientifico || 'Nenhuma selecionada'" readonly class="input-readonly" />
-
       <label>Station Field Number:</label>
-      <input type="text" formControlName="station_field_number" />
+      <input type="text" formControlName="stationFieldNumber" />
 
       <label>Sampling Number:</label>
-      <input type="number" formControlName="sampling_number" />
+      <input type="number" formControlName="samplingNumber" />
 
       <label>Método:</label>
       <input type="text" formControlName="metodo" />
 
       <label>Profundidade do Solo:</label>
-      <input type="text" formControlName="profundidade_solo" />
+      <input type="text" formControlName="profundidadeSolo" />
 
       <label>Data de Coleta:</label>
-      <div class="date-row">
-        <input type="number" formControlName="dia" placeholder="Dia" />
-        <input type="number" formControlName="mes" placeholder="Mês" />
-        <input type="number" formControlName="ano" placeholder="Ano" />
-      </div>
+      <input type="date" formControlName="dataColeta" />  
 
       <label>Coletor:</label>
       <input type="text" formControlName="collector" />
@@ -81,8 +90,8 @@
   </div>
 
   <div class="buttons">
-    <button class="salvar" type="button" [disabled]="saving" (click)="salvarMonolito()">
-      {{ saving ? 'Salvando...' : 'Salvar' }}
+    <button class="salvar" type="button" [disabled]="saving || listaDeTombos.length === 0" (click)="salvarMonolito()">
+      {{ saving ? 'Salvando...' : 'Finalizar e Salvar' }}
     </button>
     <button class="cancelar" type="button" (click)="fechar()">Cancelar</button>
   </div>

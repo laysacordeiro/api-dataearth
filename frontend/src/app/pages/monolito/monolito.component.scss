@@ -1,100 +1,5 @@
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
-/* Estrutura geral */
-.main-container {
-  display: flex;
-  height: 100vh;
-  background-color: #f8f9fb;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Sidebar */
-.sidebar {
-  background-color: #125b61;
-  color: white;
-  width: 220px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 20px;
-}
-
-.logo {
-  margin-bottom: 40px;
-  font-size: 1.5em;
-}
-
-.nav-menu {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.nav-menu { 
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0;
-
-    button { 
-      background: none;
-      border: none;
-      color: white;
-      text-align: left;
-      padding: 15px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 12px; 
-      padding: 8px 12px; 
-
-      .icon{
-        width: 18px;   
-        height: 18px;   
-        object-fit: contain; 
-      }
-
-      i { 
-        margin-right: 10px;
-      }
-
-      &:hover {
-        background-color: lighten(#15997f, 5%); /* lighten($primary-color, 5%) */
-      }
-
-      &.active {
-        background-color: #007272; /* $secondary-color */
-        font-weight: bold;
-      }
-    }
-  }
-
-.logout {
-  margin-top: auto;
-  background-color: #b91c1c;
-}
-
-
-/* Topbar */
-.topbar {
-  background-color: #125b61;
-  color: white;
-  padding: 0.8rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.user-icon i {
-  font-size: 1.2rem;
-}
-.spaceflex {
-  flex-direction: row;
-  display: flex;
-  gap: 10px;
-}
 .content {
   flex: 1;
   padding: 1rem 2rem;
@@ -115,7 +20,7 @@
 }
 
 .card-header h2 {
-  color: #0f4a2a;
+  color: #15991e;
 }
 
 .btn-nova {

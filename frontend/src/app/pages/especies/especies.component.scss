@@ -1,101 +1,5 @@
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
-/* Estrutura geral */
-.main-container {
-  display: flex;
-  height: 100vh;
-  background-color: #f8f9fb;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Sidebar */
-.sidebar {
-  background-color: #125b61;
-  color: white;
-  width: 220px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 20px;
-}
-
-.logo {
-  margin-bottom: 40px;
-  font-size: 1.5em;
-}
-
-.nav-menu {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.nav-menu { 
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0;
-
-    button { 
-      background: none;
-      border: none;
-      color: white;
-      text-align: left;
-      padding: 15px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 12px; 
-      padding: 8px 12px; 
-
-      .icon{
-        width: 18px;   
-        height: 18px;   
-        object-fit: contain; 
-      }
-
-      i { 
-        margin-right: 10px;
-      }
-
-      &:hover {
-        background-color: lighten(#15997f, 5%); /* lighten($primary-color, 5%) */
-      }
-
-      &.active {
-        background-color: #007272; /* $secondary-color */
-        font-weight: bold;
-      }
-    }
-  }
-
-.logout {
-  margin-top: auto;
-  background-color: #b91c1c;
-}
-
-
-/* Topbar */
-.topbar {
-  background-color: #125b61;
-  color: white;
-  padding: 0.8rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.user-icon i {
-  font-size: 1.2rem;
-}
-.spaceflex {
-  flex-direction: row;
-  display: flex;
-  gap: 10px;
-}
-
 /* Conteúdo */
 .content {
   flex: 1;
@@ -121,77 +25,98 @@
   color: #0f4a2a;
 }
 
+.spaceflex {
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+}
+
 .btn-nova {
-  background-color: #c2185b !important; /* Força o fundo (o mais teimoso) */
+  background-color: #c2185b !important;
   border: none;
-  color: white !important; /* Força a cor do texto/ícone a ser branca */
+  color: white !important;
   padding: 0.5rem 1rem;
-  border-radius: 30px;
+  border-radius: 999px;
   cursor: pointer;
   font-size: 0.9rem;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .btn-nova:hover {
-  background-color: #ad1457 !important; /* Força o hover */
+  background-color: #ad1457 !important;
 }
 
-/* Barra de pesquisa */
-.search-bar {
-  margin: 1rem 0;
+/* ✅ Barra de filtros (estilo imagem) */
+.filtros-bar {
+  margin-top: 0.8rem;
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 0.4rem 0.8rem;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.search-bar input {
+/* Search pill */
+.search-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d7d7d7;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  min-width: 320px;
+}
+
+.search-pill input {
   border: none;
   outline: none;
-  flex: 1;
+  width: 100%;
   font-size: 0.95rem;
+  background: transparent;
 }
 
-.search-bar i {
-  color: gray;
+.search-icon {
+  color: #777;
+  font-size: 20px;
+}
+
+/* Pills */
+.filtro-pill {
+  border: 1px solid #d7d7d7 !important;
+  border-radius: 999px !important;
+  padding: 0.35rem 0.8rem !important;
+  background: #fff !important;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+}
+
+.filtro-pill .drop {
+  font-size: 22px;
+  color: #444;
+}
+
+/* Limpar filtros */
+.btn-limpar {
+  border-radius: 999px !important;
+  height: 40px;
+  padding: 0 14px !important;
 }
 
 /* Tabela */
-.table {
+table {
   width: 100%;
-  border-collapse: collapse;
+  margin-top: 1rem;
 }
 
-.table th {
-  background-color: #e8eaf6;
-  text-align: left;
-  padding: 0.75rem;
-  font-weight: 600;
-  color: #1a237e;
-}
-
-.table td {
-  padding: 0.7rem;
-  border-top: 1px solid #eee;
-}
-
-/* Ações */
-.btn-acao {
-  border: none;
-  background: none;
-  cursor: pointer;
-  margin-right: 5px;
-}
-
-.btn-acao.editar i {
-  color: #4caf50;
-}
-
-.btn-acao.deletar i {
-  color: #f44336;
+.acoes-cell {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
 }
 
 /* Paginação */
@@ -201,4 +126,157 @@
   align-items: center;
   gap: 10px;
   font-size: 0.9rem;
+}
+
+/* ✅ Menus */
+::ng-deep .menu-filtro .mat-mdc-menu-content {
+  padding: 0 !important;
+}
+
+/* Menu simples (Ano/Autor/Monólito) */
+.menu-simple {
+  font-family: poppins, sans-serif;
+  width: 260px;
+  padding: 12px;
+}
+
+.menu-title {
+  font-family: poppins, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+.simple-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 280px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.simple-item {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  border-radius: 10px;
+  padding: 8px 10px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.simple-item:hover {
+  background: #f7f7f7;
+}
+
+.simple-item.selected {
+  border-color: #111827;
+  background: #f3f4f6;
+  font-weight: 600;
+}
+
+/* ✅ Taxonomia (menu igual ao print) */
+.menu-taxonomia {
+  font-family: poppins, sans-serif;
+  width: 280px;
+  padding: 12px;
+}
+
+.tax-scroll {
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 10px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.tax-section {
+  font-family: poppins, sans-serif;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  margin-bottom: 10px;
+}
+
+.tax-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.tax-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.tax-label {
+  font-weight: 800;
+  color: #166534; /* verdinho da imagem */
+  font-size: 13px;
+}
+
+.tax-toggle {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+}
+
+
+.toggle-symbol {
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1;
+}
+
+/* opções em pílulas */
+.tax-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tax-pill {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.12s;
+}
+
+.tax-pill:hover {
+  background: #f7f7f7;
+}
+
+.tax-pill.selected {
+  border-color: #111827;
+  background: #e5e7eb;
+  font-weight: 700;
+}
+
+.tax-empty {
+  font-size: 12px;
+  color: #6b7280;
+  padding: 6px 2px;
+}
+
+.menu-footer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mini {
+  border-radius: 999px !important;
 }
