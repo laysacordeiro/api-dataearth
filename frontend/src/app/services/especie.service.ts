@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { HttpClient } from "@angular/common/http"
+import { HttpClient, HttpParams } from "@angular/common/http"
 import type { Observable } from "rxjs"
 import type { Especie } from "../models/especie.model"
 
@@ -13,6 +13,18 @@ export class EspecieService {
 
   listar(): Observable<Especie[]> {
     return this.http.get<Especie[]>(this.apiUrl)
+  }
+
+  filtrarPorAutor(autor: string): Observable<Especie[]> {
+    return this.http.get<Especie[]>(`${this.apiUrl}/autor/${autor}`);
+  }
+
+  filtrarPorTaxonomia(nivel: string, nome: string): Observable<Especie[]> {
+    const params = new HttpParams()
+      .set("nivel", nivel)
+      .set("nome", nome);
+
+    return this.http.get<Especie[]>(`${this.apiUrl}/taxonomia`, { params });
   }
 
   buscarPorId(id: number): Observable<Especie> {

@@ -1,5 +1,6 @@
 /home/laysa-cordeiro/Documentos/DataEarth/api-dataearth/backend/src/main/java/com/projeto/agroecologia/AgroecologiaApplication.java
 /home/laysa-cordeiro/Documentos/DataEarth/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/config/AppConfig.java
+/home/laysa-cordeiro/Documentos/DataEarth/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/config/FilterConfig.java
 /home/laysa-cordeiro/Documentos/DataEarth/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/config/JwtAuthenticationFilter.java
 /home/laysa-cordeiro/Documentos/DataEarth/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/config/SecurityConfig.java
 /home/laysa-cordeiro/Documentos/DataEarth/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/controller/AuthController.java

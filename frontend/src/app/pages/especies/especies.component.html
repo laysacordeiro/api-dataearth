@@ -11,7 +11,6 @@
         </div>
       </div>
 
-      <!-- Barra de filtros -->
       <div class="filtros-bar">
         <div class="search-pill">
           <input
@@ -48,10 +47,8 @@
         </button>
       </div>
 
-      <!-- TAXONOMIA -->
       <mat-menu #menuTaxonomia="matMenu" class="menu-filtro">
         <div class="menu-taxonomia" (click)="$event.stopPropagation()">
-
           <div class="menu-title">Taxonomia</div>
 
           <div class="tax-scroll">
@@ -97,7 +94,6 @@
         </div>
       </mat-menu>
 
-      <!-- MONÓLITO -->
       <mat-menu #menuMonolito="matMenu" class="menu-filtro">
         <div class="menu-simple" (click)="$event.stopPropagation()">
           <div class="menu-title">Monólito</div>
@@ -129,7 +125,6 @@
         </div>
       </mat-menu>
 
-      <!-- ANO -->
       <mat-menu #menuAno="matMenu" class="menu-filtro">
         <div class="menu-simple" (click)="$event.stopPropagation()">
           <div class="menu-title">Ano</div>
@@ -161,7 +156,6 @@
         </div>
       </mat-menu>
 
-      <!-- AUTOR -->
       <mat-menu #menuAutor="matMenu" class="menu-filtro">
         <div class="menu-simple" (click)="$event.stopPropagation()">
           <div class="menu-title">Autor</div>
@@ -193,13 +187,7 @@
         </div>
       </mat-menu>
 
-      <!-- Tabela -->
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef> ID </th>
-          <td mat-cell *matCellDef="let especie"> {{ especie.id }} </td>
-        </ng-container>
 
         <ng-container matColumnDef="nome">
           <th mat-header-cell *matHeaderCellDef> Nome </th>
@@ -211,6 +199,11 @@
           <td mat-cell *matCellDef="let especie"> {{ especie.nomeCientifico }} </td>
         </ng-container>
 
+        <ng-container matColumnDef="autor">
+          <th mat-header-cell *matHeaderCellDef> Autor </th>
+          <td mat-cell *matCellDef="let especie"> {{ especie.autor || '-' }} </td>
+        </ng-container>
+
         <ng-container matColumnDef="ano">
           <th mat-header-cell *matHeaderCellDef> Ano </th>
           <td mat-cell *matCellDef="let especie"> {{ especie.ano }} </td>
@@ -219,13 +212,13 @@
         <ng-container matColumnDef="acoes">
           <th mat-header-cell *matHeaderCellDef> </th>
           <td mat-cell *matCellDef="let especie" class="acoes-cell">
-            <button mat-icon-button color="primary" matTooltip="Ver Taxonomia" (click)="verTaxonomia(especie)">
+            <button mat-icon-button color="primary" (click)="verTaxonomia(especie)">
               <mat-icon>account_tree</mat-icon>
             </button>
-            <button mat-icon-button color="accent" matTooltip="Editar" (click)="editarEspecie(especie)">
+            <button mat-icon-button color="accent" (click)="editarEspecie(especie)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" matTooltip="Excluir" (click)="excluirEspecie(especie)">
+            <button mat-icon-button color="warn" (click)="excluirEspecie(especie)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
@@ -235,7 +228,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 
-      <!-- Paginação -->
       <div class="pagination">
         <span>Itens por página:</span>
         <select [(ngModel)]="itensPorPagina" (change)="alterarItensPorPagina()">

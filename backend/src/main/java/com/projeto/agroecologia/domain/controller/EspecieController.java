@@ -21,6 +21,18 @@ public class EspecieController {
         return service.listar();
     }
 
+    @GetMapping("/autor/{autor}")
+    public List<Especie> filtrarPorAutor(@PathVariable String autor) {
+        return service.filtrarPorAutor(autor);
+    }
+
+    @GetMapping("/taxonomia")
+    public List<Especie> filtrarPorTaxonomia(
+            @RequestParam String nivel,
+            @RequestParam String nome) {
+        return service.filtrarPorTaxonomia(nivel, nome);
+    }
+
     @GetMapping("/{id}")
     public Especie buscar(@PathVariable Long id) {
         return service.buscar(id);
@@ -41,4 +53,3 @@ public class EspecieController {
         service.excluir(id);
     }
 }
-

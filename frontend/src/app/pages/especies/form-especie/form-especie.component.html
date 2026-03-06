@@ -9,20 +9,36 @@
 
       <label>Nome Popular:</label>
       <input type="text" formControlName="nome" />
+      <small class="erro" *ngIf="campoInvalido('nome')">Campo obrigatório.</small>
 
       <label>Nome Científico:</label>
       <input type="text" formControlName="nomeCientifico" readonly class="input-readonly" />
+      <small class="erro" *ngIf="campoInvalido('nomeCientifico')">Campo obrigatório.</small>
 
       <label>Ano:</label>
       <input type="number" formControlName="ano" />
 
       <label>Autor:</label>
-      <input type="text" formControlName="autor" />
+      <select formControlName="autorId" (change)="onAutorChange($event)">
+        <option value="">Selecionar...</option>
+        <option *ngFor="let autor of autores" [value]="autor">{{ autor }}</option>
+        <option value="outro">Outro...</option>
+      </select>
+      <small class="erro" *ngIf="campoInvalido('autorId')">Campo obrigatório.</small>
+
+      <input
+        *ngIf="mostrarAutorInput"
+        type="text"
+        formControlName="autorNome"
+        placeholder="Digite o nome do autor"
+        class="input-novo"
+      />
+      <small class="erro" *ngIf="campoInvalido('autorNome')">Informe o novo autor.</small>
 
       <label>Descrição:</label>
       <textarea rows="6" formControlName="descricao"></textarea>
     </div>
- 
+
     <div class="section">
       <h3>Taxonomia</h3>
 
@@ -32,7 +48,10 @@
         <option *ngFor="let r of reinos" [value]="r.id">{{ r.nome }}</option>
         <option value="outro">Outro...</option>
       </select>
+      <small class="erro" *ngIf="campoInvalido('reinoId')">Campo obrigatório.</small>
+
       <input *ngIf="mostrarInput.reino" type="text" formControlName="reinoNome" placeholder="Digite o nome do novo Reino" class="input-novo" />
+      <small class="erro" *ngIf="campoInvalido('reinoNome')">Informe o novo Reino.</small>
 
       <label>Filo:</label>
       <select formControlName="filoId" (change)="onSelectChange($event, 'filo')">
@@ -40,40 +59,50 @@
         <option *ngFor="let r of filos" [value]="r.id">{{ r.nome }}</option>
         <option value="outro">Outro...</option>
       </select>
+      <small class="erro" *ngIf="campoInvalido('filoId')">Campo obrigatório.</small>
+
       <input *ngIf="mostrarInput.filo" type="text" formControlName="filoNome" placeholder="Digite o nome do novo Filo" class="input-novo" />
+      <small class="erro" *ngIf="campoInvalido('filoNome')">Informe o novo Filo.</small>
 
       <div class="label-row">
         <label>Classe:</label>
         <div class="acoes">
           <span class="icone-add" (click)="toggleMenuSub('classe')">{{ menuAberto === 'classe' ? '-' : '+' }}</span>
-          <select class="select-menu" *ngIf="menuAberto === 'classe'" (change)="ativarSubgrupo($event)" class="select-menu">
+          <select *ngIf="menuAberto === 'classe'" (change)="ativarSubgrupo($event)" class="select-menu">
             <option value="">Adicionar...</option>
             <option value="subclasse">Subclasse</option>
             <option value="infraclasse">Infraclasse</option>
           </select>
         </div>
       </div>
+
       <select formControlName="classeId" (change)="onSelectChange($event, 'classe')">
         <option value="">Selecionar...</option>
         <option *ngFor="let r of classes" [value]="r.id">{{ r.nome }}</option>
         <option value="outro">Outro...</option>
       </select>
+      <small class="erro" *ngIf="campoInvalido('classeId')">Campo obrigatório.</small>
+
       <input *ngIf="mostrarInput.classe" type="text" formControlName="classeNome" placeholder="Nova Classe" class="input-novo" />
+      <small class="erro" *ngIf="campoInvalido('classeNome')">Informe a nova Classe.</small>
 
       <div class="sub-campo" *ngIf="mostrarSub.subclasse">
         <div class="sub-label">Subclasse: <span class="icone-add" (click)="removerSubgrupo('subclasse')">-</span></div>
         <input type="text" formControlName="subclasseNome" placeholder="Nome da Subclasse">
+        <small class="erro" *ngIf="campoInvalido('subclasseNome')">Campo obrigatório.</small>
       </div>
+
       <div class="sub-campo" *ngIf="mostrarSub.infraclasse">
-        <div class="sub-label">Infraclasse: <span class="icone-add"(click)="removerSubgrupo('infraclasse')">-</span></div>
+        <div class="sub-label">Infraclasse: <span class="icone-add" (click)="removerSubgrupo('infraclasse')">-</span></div>
         <input type="text" formControlName="infraclasseNome" placeholder="Nome da Infraclasse">
+        <small class="erro" *ngIf="campoInvalido('infraclasseNome')">Campo obrigatório.</small>
       </div>
 
       <div class="label-row">
         <label>Ordem:</label>
         <div class="acoes">
           <span class="icone-add" [class.aberto]="menuAberto === 'ordem'" (click)="toggleMenuSub('ordem')">{{ menuAberto === 'ordem' ? '-' : '+' }}</span>
-          <select class="select-menu" *ngIf="menuAberto === 'ordem'" (change)="ativarSubgrupo($event)" class="select-menu">
+          <select *ngIf="menuAberto === 'ordem'" (change)="ativarSubgrupo($event)" class="select-menu">
             <option value="">Adicionar...</option>
             <option value="subordem">Subordem</option>
             <option value="infraordem">Infraordem</option>
@@ -81,67 +110,90 @@
           </select>
         </div>
       </div>
+
       <select formControlName="ordemId" (change)="onSelectChange($event, 'ordem')">
         <option value="">Selecionar...</option>
         <option *ngFor="let r of ordens" [value]="r.id">{{ r.nome }}</option>
         <option value="outro">Outro...</option>
       </select>
+      <small class="erro" *ngIf="campoInvalido('ordemId')">Campo obrigatório.</small>
 
       <input *ngIf="mostrarInput.ordem" type="text" formControlName="ordemNome" placeholder="Digite o nome da nova Ordem" class="input-novo" />
+      <small class="erro" *ngIf="campoInvalido('ordemNome')">Informe a nova Ordem.</small>
 
       <div class="sub-campo" *ngIf="mostrarSub.subordem">
-      <div class="sub-label">Subordem: 
-        <span class="icone-add" (click)="removerSubgrupo('subordem')">-</span></div>
+        <div class="sub-label">Subordem: <span class="icone-add" (click)="removerSubgrupo('subordem')">-</span></div>
         <input type="text" formControlName="subordemNome">
+        <small class="erro" *ngIf="campoInvalido('subordemNome')">Campo obrigatório.</small>
       </div>
+
       <div class="sub-campo" *ngIf="mostrarSub.infraordem">
-      <div class="sub-label">Infraordem: <span class="icone-add" (click)="removerSubgrupo('infraordem')">-</span></div>
-       <input type="text" formControlName="infraordemNome">
+        <div class="sub-label">Infraordem: <span class="icone-add" (click)="removerSubgrupo('infraordem')">-</span></div>
+        <input type="text" formControlName="infraordemNome">
+        <small class="erro" *ngIf="campoInvalido('infraordemNome')">Campo obrigatório.</small>
       </div>
+
       <div class="sub-campo" *ngIf="mostrarSub.parvordem">
         <div class="sub-label">Parvordem: <span class="icone-add" (click)="removerSubgrupo('parvordem')">-</span></div>
         <input type="text" formControlName="parvordemNome">
+        <small class="erro" *ngIf="campoInvalido('parvordemNome')">Campo obrigatório.</small>
       </div>
 
       <div class="label-row">
         <label>Família:</label>
         <span class="icone-add" (click)="toggleSub('subfamilia')">{{ mostrarSub.subfamilia ? '-' : '+' }}</span>
       </div>
+
       <select formControlName="familiaId" (change)="onSelectChange($event, 'familia')">
         <option value="">Selecionar...</option>
         <option *ngFor="let r of familias" [value]="r.id">{{ r.nome }}</option>
         <option value="outro">Outro...</option>
       </select>
+      <small class="erro" *ngIf="campoInvalido('familiaId')">Campo obrigatório.</small>
+
       <input *ngIf="mostrarInput.familia" type="text" formControlName="familiaNome" placeholder="Digite o nome da nova Família" class="input-novo" />
+      <small class="erro" *ngIf="campoInvalido('familiaNome')">Informe a nova Família.</small>
+
       <div class="sub-campo" *ngIf="mostrarSub.subfamilia">
         <label>Subfamília:</label>
         <input type="text" formControlName="subfamiliaNome" placeholder="Nome da Subfamília">
+        <small class="erro" *ngIf="campoInvalido('subfamiliaNome')">Campo obrigatório.</small>
       </div>
 
       <div class="label-row">
         <label>Gênero:</label>
         <span class="icone-add" (click)="toggleSub('subgenero')">{{ mostrarSub.subgenero ? '-' : '+' }}</span>
       </div>
+
       <select formControlName="generoId" (change)="onSelectChange($event, 'genero')">
         <option value="">Selecionar...</option>
         <option *ngFor="let r of generos" [value]="r.id">{{ r.nome }}</option>
         <option value="outro">Outro...</option>
       </select>
+      <small class="erro" *ngIf="campoInvalido('generoId')">Campo obrigatório.</small>
+
       <input *ngIf="mostrarInput.genero" type="text" formControlName="generoNome" placeholder="Digite o nome do novo Gênero" class="input-novo" />
+      <small class="erro" *ngIf="campoInvalido('generoNome')">Informe o novo Gênero.</small>
+
       <div class="sub-campo" *ngIf="mostrarSub.subgenero">
         <label>Subgênero:</label>
         <input type="text" formControlName="subgeneroNome" placeholder="Nome do Subgênero">
+        <small class="erro" *ngIf="campoInvalido('subgeneroNome')">Campo obrigatório.</small>
       </div>
 
       <div class="label-row">
         <label>Epiteto:</label>
       </div>
+
       <select formControlName="epitetoId" (change)="onSelectChange($event, 'epiteto')">
         <option value="">Selecionar...</option>
         <option *ngFor="let r of epitetos" [value]="r.id">{{ r.nome }}</option>
         <option value="outro">Outro...</option>
       </select>
+      <small class="erro" *ngIf="campoInvalido('epitetoId')">Campo obrigatório.</small>
+
       <input *ngIf="mostrarInput.epiteto" type="text" formControlName="epitetoNome" placeholder="Digite o nome do novo Epiteto" class="input-novo" />
+      <small class="erro" *ngIf="campoInvalido('epitetoNome')">Informe o novo Epiteto.</small>
     </div>
   </div>
 
@@ -153,4 +205,3 @@
   </div>
 
 </form>
- 

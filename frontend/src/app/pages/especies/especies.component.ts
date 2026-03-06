@@ -72,12 +72,11 @@ export class EspecieComponent implements OnInit, AfterViewInit {
   rotaAtiva: string = 'especies';
 
   especies: Especie[] = [];
-  displayedColumns: string[] = ['nome', 'nomeCientifico', 'ano', 'acoes'];
+  displayedColumns: string[] = ['nome', 'nomeCientifico', 'autor', 'ano', 'acoes'];
   dataSource = new MatTableDataSource<Especie>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  // ✅ filtros
   filters: {
     search: string;
     ano: number | null;
@@ -111,22 +110,21 @@ export class EspecieComponent implements OnInit, AfterViewInit {
   autorOptions: string[] = [];
   monolitoOptions: string[] = [];
 
-  // ✅ níveis do menu (ajuste apiNivel se seu backend usa outro texto)
   taxonomyLevels: Array<{ key: TaxLevelKey; label: string; apiNivel: string }> = [
-    { key: 'reino',       label: 'Reino',       apiNivel: 'REINO' },
-    { key: 'filo',        label: 'Filo',        apiNivel: 'FILO' },
-    { key: 'classe',      label: 'Classe',      apiNivel: 'CLASSE' },
-    { key: 'subclasse',   label: 'Subclasse',   apiNivel: 'SUBCLASSE' },
-    { key: 'infraclasse', label: 'Infraclasse', apiNivel: 'INFRACLASSE' },
-    { key: 'ordem',       label: 'Ordem',       apiNivel: 'ORDEM' },
-    { key: 'subordem',    label: 'Subordem',    apiNivel: 'SUBORDEM' },
-    { key: 'infraordem',  label: 'Infraordem',  apiNivel: 'INFRAORDEM' },
-    { key: 'parvordem',   label: 'Parvordem',   apiNivel: 'PARVORDEM' },
-    { key: 'familia',     label: 'Família',     apiNivel: 'FAMILIA' },
-    { key: 'subfamilia',  label: 'Subfamília',  apiNivel: 'SUBFAMILIA' },
-    { key: 'genero',      label: 'Gênero',      apiNivel: 'GENERO' },
-    { key: 'subgenero',   label: 'Subgênero',   apiNivel: 'SUBGENERO' },
-    { key: 'epiteto',     label: 'Epíteto',     apiNivel: 'EPITETO' },
+    { key: 'reino',       label: 'Reino',       apiNivel: 'Reino' },
+    { key: 'filo',        label: 'Filo',        apiNivel: 'Filo' },
+    { key: 'classe',      label: 'Classe',      apiNivel: 'Classe' },
+    { key: 'subclasse',   label: 'Subclasse',   apiNivel: 'Subclasse' },
+    { key: 'infraclasse', label: 'Infraclasse', apiNivel: 'Infraclasse' },
+    { key: 'ordem',       label: 'Ordem',       apiNivel: 'Ordem' },
+    { key: 'subordem',    label: 'Subordem',    apiNivel: 'Subordem' },
+    { key: 'infraordem',  label: 'Infraordem',  apiNivel: 'Infraordem' },
+    { key: 'parvordem',   label: 'Parvordem',   apiNivel: 'Parvordem' },
+    { key: 'familia',     label: 'Família',     apiNivel: 'Família' },
+    { key: 'subfamilia',  label: 'Subfamília',  apiNivel: 'Subfamília' },
+    { key: 'genero',      label: 'Gênero',      apiNivel: 'Gênero' },
+    { key: 'subgenero',   label: 'Subgênero',   apiNivel: 'Subgênero' },
+    { key: 'epiteto',     label: 'Epíteto',     apiNivel: 'Epiteto' },
   ];
 
   expandedTaxLevels: Record<TaxLevelKey, boolean> = {
@@ -242,12 +240,14 @@ export class EspecieComponent implements OnInit, AfterViewInit {
   }
 
   selectTaxOption(level: TaxLevelKey, value: string) {
-    this.filters.taxonomia[level] = (this.filters.taxonomia[level] === value) ? null : value;
+    this.filters.taxonomia[level] = this.filters.taxonomia[level] === value ? null : value;
     this.applyAllFilters();
   }
 
   limparTaxonomia() {
-    (Object.keys(this.filters.taxonomia) as TaxLevelKey[]).forEach(k => this.filters.taxonomia[k] = null);
+    (Object.keys(this.filters.taxonomia) as TaxLevelKey[]).forEach(k => {
+      this.filters.taxonomia[k] = null;
+    });
     this.applyAllFilters();
   }
 
@@ -257,14 +257,22 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     this.filters.ano = null;
     this.filters.autor = null;
     this.filters.monolito = null;
-    this.limparTaxonomia();
+
+    (Object.keys(this.filters.taxonomia) as TaxLevelKey[]).forEach(k => {
+      this.filters.taxonomia[k] = null;
+    });
+
     this.applyAllFilters();
   }
 
   private setupFilterPredicate() {
     this.dataSource.filterPredicate = (e: Especie, raw: string) => {
       let f: any;
-      try { f = JSON.parse(raw || '{}'); } catch { f = {}; }
+      try {
+        f = JSON.parse(raw || '{}');
+      } catch {
+        f = {};
+      }
 
       const nome = (e.nome ?? '').toString().toLowerCase();
       const cient = ((e as any).nomeCientifico ?? '').toString().toLowerCase();
@@ -272,7 +280,7 @@ export class EspecieComponent implements OnInit, AfterViewInit {
       const search = (f.search ?? '').toString().trim().toLowerCase();
       const okSearch = !search || nome.includes(search) || cient.includes(search);
 
-      const okAno = (f.ano == null) ? true : Number((e as any).ano) === Number(f.ano);
+      const okAno = f.ano == null ? true : Number((e as any).ano) === Number(f.ano);
 
       const autor = this.getAutorFromEspecie(e).toLowerCase();
       const okAutor = !f.autor ? true : autor === String(f.autor).toLowerCase();
@@ -280,13 +288,11 @@ export class EspecieComponent implements OnInit, AfterViewInit {
       const monolito = this.getMonolitoFromEspecie(e).toLowerCase();
       const okMonolito = !f.monolito ? true : monolito === String(f.monolito).toLowerCase();
 
-      // ✅ Taxonomia diretamente em especie.reino/filo/...
       const okTax = (Object.keys(f.taxonomia || {}) as TaxLevelKey[]).every((k) => {
         const selected = f.taxonomia?.[k];
         if (!selected) return true;
 
-        const fieldValue = ((e as any)?.[k] ?? '').toString().toLowerCase();
-        return fieldValue === String(selected).toLowerCase();
+        return this.especiePertenceANivel(e, k, String(selected));
       });
 
       return okSearch && okAno && okAutor && okMonolito && okTax;
@@ -299,7 +305,6 @@ export class EspecieComponent implements OnInit, AfterViewInit {
   }
 
   private buildMenuOptions(data: Especie[]) {
-    // Ano
     const anos = new Set<number>();
     data.forEach(e => {
       const a = Number((e as any).ano);
@@ -307,7 +312,6 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     });
     this.anoOptions = Array.from(anos).sort((a, b) => b - a);
 
-    // Autor (ajuste se campo for diferente)
     const autores = new Set<string>();
     data.forEach(e => {
       const au = this.getAutorFromEspecie(e).trim();
@@ -315,7 +319,6 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     });
     this.autorOptions = Array.from(autores).sort((a, b) => a.localeCompare(b));
 
-    // Monólito (ajuste se campo for diferente)
     const monos = new Set<string>();
     data.forEach(e => {
       const m = this.getMonolitoFromEspecie(e).trim();
@@ -325,13 +328,41 @@ export class EspecieComponent implements OnInit, AfterViewInit {
   }
 
   private getAutorFromEspecie(e: Especie): string {
-    return String((e as any).autor ?? (e as any).collector ?? '');
+    return String((e as any).autor ?? '');
   }
 
   private getMonolitoFromEspecie(e: Especie): string {
     const m = (e as any).monolito;
     if (m && typeof m === 'object') return String(m.id ?? m.nome ?? '');
     return String((e as any).monolitoId ?? '');
+  }
+
+  private especiePertenceANivel(especie: Especie, level: TaxLevelKey, selectedValue: string): boolean {
+    const nivelLabel = this.getNivelLabelByKey(level);
+    if (!nivelLabel) return false;
+
+    let atual: any = (especie as any).taxonomia;
+
+    while (atual) {
+      const nomeAtual = String(atual?.nome ?? '').trim().toLowerCase();
+      const nivelAtual = String(atual?.nivel ?? '').trim().toLowerCase();
+
+      if (
+        nivelAtual === nivelLabel.toLowerCase() &&
+        nomeAtual === selectedValue.trim().toLowerCase()
+      ) {
+        return true;
+      }
+
+      atual = atual.parent;
+    }
+
+    return false;
+  }
+
+  private getNivelLabelByKey(level: TaxLevelKey): string | null {
+    const found = this.taxonomyLevels.find(l => l.key === level);
+    return found ? found.label : null;
   }
 
   private loadTaxOptions(level: TaxLevelKey) {
@@ -343,7 +374,7 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     this.taxonomiaService.filtrarPorNivel(cfg.apiNivel).subscribe({
       next: (list) => {
         this.taxOptions[level] = (list || [])
-          .map((t: any) => String(t?.nome ?? t?.descricao ?? t?.valor ?? ''))
+          .map((t: any) => String(t?.nome ?? ''))
           .filter((x: string) => !!x)
           .sort((a: string, b: string) => a.localeCompare(b));
 
