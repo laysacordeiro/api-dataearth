@@ -27,7 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath().toLowerCase();
-
         return path.startsWith("/auth/");
     }
 
@@ -38,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain chain
     ) throws ServletException, IOException {
 
+
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             chain.doFilter(request, response);
             return;
@@ -45,13 +45,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
 
+        System.out.println(">>> FILTER HIT: " + request.getMethod() + " " + request.getServletPath());
+    System.out.println(">>> AUTH HEADER: " + header);
         if (header != null && header.startsWith("Bearer ")) {
-
             String token = header.substring(7);
 
             try {
                 if (jwtUtils.validateToken(token)) {
-
                     String username = jwtUtils.extractUsername(token);
 
                     List<SimpleGrantedAuthority> authorities =
@@ -59,10 +59,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .stream()
                             .map(SimpleGrantedAuthority::new)
                             .toList();
-
-                        System.out.println("AUTHORITIES NO FILTRO = " + authorities);
-                        System.out.println(">>> PATH = " + request.getServletPath());
-                        System.out.println(">>> AUTH HEADER = " + request.getHeader("Authorization"));
 
                     UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
@@ -77,15 +73,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
-                System.out.println(">>> TOKEN VALID = " + jwtUtils.validateToken(token));
             } catch (Exception e) {
                 SecurityContextHolder.clearContext();
             }
         }
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(">>> AUTH FINAL = " + auth);
 
         chain.doFilter(request, response);
     }
 }
-

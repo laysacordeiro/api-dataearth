@@ -5,6 +5,7 @@ export interface Especie {
   nome: string;
   nomeCientifico: string;
   ano: number;
+  autor: string; 
   descricao: string;
   taxonomia: Taxonomia;
 }

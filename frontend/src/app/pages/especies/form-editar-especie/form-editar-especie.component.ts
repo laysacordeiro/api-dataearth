@@ -73,6 +73,7 @@ export class FormEditarEspecieComponent implements OnInit {
   private criarFormulario(): void {
     this.formEspecie = this.fb.group({
       nome: ["", Validators.required],
+      autor: ["", Validators.required],
       nomeCientifico: ["", Validators.required],
       ano: ["", [Validators.required, Validators.min(1)]],
       descricao: [""],
@@ -104,6 +105,7 @@ export class FormEditarEspecieComponent implements OnInit {
   private preencherFormulario(especie: Especie): void {
     this.formEspecie.patchValue({
       nome: especie.nome,
+      autor: especie.autor, 
       nomeCientifico: especie.nomeCientifico,
       ano: especie.ano,
       descricao: especie.descricao,
@@ -204,6 +206,7 @@ export class FormEditarEspecieComponent implements OnInit {
     const especieAtualizada: any = {
       id: this.especieId,
       nome: raw.nome,
+      autor: raw.autor, 
       nomeCientifico: raw.nomeCientifico,
       ano: raw.ano,
       descricao: raw.descricao,

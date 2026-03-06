@@ -3,6 +3,7 @@ package com.projeto.agroecologia.domain.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -34,18 +35,17 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-
-                .requestMatchers("/auth/**").permitAll()
-
-                .requestMatchers("/taxonomias/**")
-                    .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
-                .requestMatchers("/especies/**")
-                    .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
-                .requestMatchers("/monolitos/**")
-                    .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
-                .anyRequest()
-                    .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
-            )
+    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+    .requestMatchers("/auth/**").permitAll()
+    .requestMatchers("/taxonomias/**")
+        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+    .requestMatchers("/especies/**")
+        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+    .requestMatchers("/monolitos/**")
+        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+    .anyRequest()
+        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+)
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )

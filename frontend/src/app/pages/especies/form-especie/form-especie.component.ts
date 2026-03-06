@@ -70,6 +70,7 @@ export class FormEspecieComponent implements OnInit, AfterViewInit {
       this.especieId = this.data.id;
       this.formEspecie.patchValue({
         nome: this.data.nome,
+        autor: this.data.autor,
         nomeCientifico: this.data.nomeCientifico,
         ano: this.data.ano,
         descricao: this.data.descricao
@@ -81,6 +82,7 @@ export class FormEspecieComponent implements OnInit, AfterViewInit {
   private initForm() {
     this.formEspecie = this.fb.group({
       nome: ['', Validators.required],
+      autor: ['', Validators.required], 
       nomeCientifico: ['', Validators.required],
       ano: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       descricao: [''],
@@ -216,6 +218,7 @@ export class FormEspecieComponent implements OnInit, AfterViewInit {
     const payload: Especie = {
       ...(this.isEditMode() && this.especieId ? { id: this.especieId } : {}),
       nome: f.nome,
+      autor: f.autor, 
       nomeCientifico: f.nomeCientifico,
       ano: Number(f.ano),
       descricao: f.descricao ?? "",
