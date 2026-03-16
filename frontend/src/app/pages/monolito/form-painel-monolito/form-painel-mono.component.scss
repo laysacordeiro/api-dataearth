@@ -60,14 +60,12 @@
   }
 }
 
-// --- NOVOS AJUSTES PARA A SEÇÃO DE TOMBO ---
-
 .especie-card-flutuante {
   margin-top: 15px;
   padding: 15px;
-  background-color: #f9f9f9; // Mesmo fundo do especie-card
+  background-color: #f9f9f9;
   border-radius: 8px;
-  border: 1px dashed #15991e; // Destaque suave para área de ação
+  border: 1px dashed #15991e;
 
   h4 {
     margin: 0 0 10px 0;
@@ -78,8 +76,27 @@
   .input-row-tombo {
     display: flex;
     gap: 10px;
+
     .field {
       flex: 1;
+    }
+  }
+
+  .btn-gerar-outro {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background-color: #eef8ef;
+    color: #15991e;
+    border: 1px solid #15991e;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
+
+    &:hover {
+      background-color: #15991e;
+      color: white;
     }
   }
 
@@ -103,6 +120,7 @@
 
 .lista-adicionadas {
   margin-top: 20px;
+
   h4 {
     font-size: 14px;
     color: #333;
@@ -121,7 +139,9 @@
     font-size: 13px;
 
     .info {
-      strong { color: #15991e; }
+      strong {
+        color: #15991e;
+      }
     }
 
     .btn-remover {
@@ -145,11 +165,10 @@
   }
 }
 
-// --- FIM DOS NOVOS AJUSTES ---
-
 .date-row {
   display: flex;
   gap: 10px;
+
   input {
     flex: 1;
   }
@@ -170,6 +189,7 @@
   .especie-info {
     font-size: 13px;
     margin-bottom: 4px;
+
     .label {
       font-weight: 600;
       margin-right: 5px;
@@ -199,6 +219,7 @@
 
 .taxonomia-section {
   margin-top: 15px;
+
   h4 {
     font-size: 14px;
     color: #333;
@@ -220,8 +241,15 @@
   display: flex;
   gap: 5px;
 
-  .nivel { font-weight: 700; color: #555; }
-  .nome { font-style: italic; color: #15991e; }
+  .nivel {
+    font-weight: 700;
+    color: #555;
+  }
+
+  .nome {
+    font-style: italic;
+    color: #15991e;
+  }
 }
 
 .buttons {
@@ -243,12 +271,22 @@
   .salvar {
     background-color: #15991e;
     color: white;
-    &:hover:not(:disabled) { filter: brightness(0.9); }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.9);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 
   .cancelar {
     background-color: #eee;
-    &:hover { background-color: #ddd; }
+
+    &:hover {
+      background-color: #ddd;
+    }
   }
 }

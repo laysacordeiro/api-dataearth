@@ -11,13 +11,100 @@
         </div>
       </div>
 
-      <div class="search-bar">
-        <input
-          matInput
-          placeholder="Pesquisar monólito..."
-          [(ngModel)]="searchTerm"
-          (input)="aplicarFiltro($event)" />
-        <i class="fa fa-search"></i>
+      <div class="filtros-bar">
+        <!-- Pesquisa -->
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Pesquisar station field number..."
+            [(ngModel)]="filtroStationFieldNumber"
+            (ngModelChange)="aplicarFiltros()"
+          />
+          <mat-icon>search</mat-icon>
+        </div>
+
+        <!-- Espécie -->
+        <button class="filtro-pill" mat-button [matMenuTriggerFor]="menuEspecie">
+          Espécie
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+
+        <mat-menu #menuEspecie="matMenu" class="menu-filtro">
+          <div class="menu-opcoes" (click)="$event.stopPropagation()">
+            <h4>Espécie</h4>
+
+            <button
+              class="opcao-filtro"
+              [class.ativo]="filtroEspecie === ''"
+              (click)="limparFiltroEspecie()">
+              Todas
+            </button>
+
+            <button
+              class="opcao-filtro"
+              *ngFor="let especie of especies"
+              [class.ativo]="filtroEspecie === especie.nome"
+              (click)="selecionarEspecie(especie.nome)">
+              {{ especie.nome }}
+            </button>
+          </div>
+        </mat-menu>
+
+        <!-- Método -->
+        <button class="filtro-pill" mat-button [matMenuTriggerFor]="menuMetodo">
+          Método
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+
+        <mat-menu #menuMetodo="matMenu" class="menu-filtro">
+          <div class="menu-opcoes" (click)="$event.stopPropagation()">
+            <h4>Método</h4>
+
+            <button
+              class="opcao-filtro"
+              [class.ativo]="filtroMetodo === ''"
+              (click)="limparFiltroMetodo()">
+              Todos
+            </button>
+
+            <button
+              class="opcao-filtro"
+              *ngFor="let metodo of metodos"
+              [class.ativo]="filtroMetodo === metodo"
+              (click)="selecionarMetodo(metodo)">
+              {{ metodo }}
+            </button>
+          </div>
+        </mat-menu>
+
+        <!-- Data -->
+        <button class="filtro-pill" mat-button [matMenuTriggerFor]="menuData">
+          Data
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+
+        <mat-menu #menuData="matMenu" class="menu-filtro">
+          <div class="menu-content" (click)="$event.stopPropagation()">
+            <label>Data inicial</label>
+            <input
+              type="date"
+              [(ngModel)]="filtroDataInicio"
+              (change)="aplicarFiltros()"
+            />
+
+            <label>Data final</label>
+            <input
+              type="date"
+              [(ngModel)]="filtroDataFim"
+              (change)="aplicarFiltros()"
+            />
+          </div>
+        </mat-menu>
+
+        <!-- Limpar -->
+        <button class="filtro-pill limpar-btn" (click)="limparFiltros()">
+          Limpar filtros
+        </button>
       </div>
 
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
@@ -44,12 +131,14 @@
         <ng-container matColumnDef="acoes">
           <th mat-header-cell *matHeaderCellDef> </th>
           <td mat-cell *matCellDef="let m" class="acoes-cell">
-            <button mat-icon-button color="primary" matTooltip="Ver Taxonomia">
+            <button mat-icon-button color="primary" >
               <mat-icon>account_tree</mat-icon>
             </button>
-            <button mat-icon-button color="accent" matTooltip="Editar" >
+
+            <button mat-icon-button color="accent">
               <mat-icon>edit</mat-icon>
             </button>
+
             <button mat-icon-button color="warn" matTooltip="Excluir" (click)="excluirMonolito(m)">
               <mat-icon>delete</mat-icon>
             </button>
@@ -68,7 +157,12 @@
         <span>{{ dataSource.filteredData.length }} total</span>
       </div>
 
-      <mat-paginator #paginator [pageSize]="itensPorPagina" [pageSizeOptions]="[5,10,20]" style="display:none"></mat-paginator>
+      <mat-paginator
+        #paginator
+        [pageSize]="itensPorPagina"
+        [pageSizeOptions]="[5,10,20]"
+        style="display:none">
+      </mat-paginator>
     </div>
 
     <router-outlet></router-outlet>

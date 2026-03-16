@@ -1,6 +1,5 @@
 package com.projeto.agroecologia.domain.controller;
 
-import com.projeto.agroecologia.domain.model.Especie;
 import com.projeto.agroecologia.domain.model.Monolito;
 import com.projeto.agroecologia.domain.model.Tombo;
 import com.projeto.agroecologia.domain.service.MonolitoService;
@@ -16,23 +15,28 @@ public class MonolitoController {
 
     private final MonolitoService service;
 
+    public MonolitoController(MonolitoService service) {
+        this.service = service;
+    }
+
     @PostMapping("/{monolitoId}/especies/{especieId}")
     public ResponseEntity<Void> adicionarEspecieComDados(
             @PathVariable Long monolitoId,
             @PathVariable Long especieId,
-            @RequestBody Tombo dados) { // Use @RequestBody para JSON
-        
-        service.adicionarEspecieComDados(monolitoId, especieId, dados.getAbundancia(), dados.getIdentificador());
+            @RequestBody Tombo dados) {
+
+        service.adicionarEspecieComDados(
+                monolitoId,
+                especieId,
+                dados.getAbundancia(),
+                dados.getIdentificador()
+        );
         return ResponseEntity.status(201).build();
     }
 
     @GetMapping("/{id}/tombos")
     public List<Tombo> listarTombos(@PathVariable Long id) {
-        return service.listarTombos(id); // Chamando o novo método do service
-    }
-
-    public MonolitoController(MonolitoService service) {
-        this.service = service;
+        return service.listarTombos(id);
     }
 
     @PostMapping
@@ -48,6 +52,21 @@ public class MonolitoController {
     @GetMapping("/collector")
     public List<Monolito> buscarPorCollector(@RequestParam String collector) {
         return service.buscarPorCollector(collector);
+    }
+
+    @GetMapping("/metodo")
+    public List<Monolito> buscarPorMetodo(@RequestParam String metodo) {
+        return service.buscarPorMetodo(metodo);
+    }
+
+    @GetMapping("/metodos")
+    public List<String> listarMetodos() {
+        return service.listarMetodos();
+    }
+
+    @GetMapping("/especie")
+    public List<Monolito> buscarPorEspecie(@RequestParam String especie) {
+        return service.buscarMonolitosPorEspecie(especie);
     }
 
     @GetMapping("/verificar")

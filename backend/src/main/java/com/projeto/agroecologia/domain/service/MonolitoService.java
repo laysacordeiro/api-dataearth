@@ -34,8 +34,9 @@ public class MonolitoService {
     /* ============================
        MONÓLITO
     ============================ */
-    public List<Monolito> listarTodos() { 
-        return monolitoRepository.findAll(); 
+
+    public List<Monolito> listarTodos() {
+        return monolitoRepository.findAll();
     }
 
     public Monolito salvar(Monolito monolito) {
@@ -68,6 +69,18 @@ public class MonolitoService {
         return monolitoRepository.findByCollectorContainingIgnoreCase(collector);
     }
 
+    public List<Monolito> buscarPorMetodo(String metodo) {
+        return monolitoRepository.findByMetodoContainingIgnoreCase(metodo);
+    }
+
+    public List<String> listarMetodos() {
+        return monolitoRepository.listarMetodosDistinct();
+    }
+
+    public List<Monolito> buscarMonolitosPorEspecie(String especie) {
+        return tomboRepository.buscarMonolitosPorEspecie(especie);
+    }
+
     /* ============================
        TOMBO (Monólito ↔ Espécie)
     ============================ */
@@ -79,7 +92,6 @@ public class MonolitoService {
             Integer abundancia,
             String identificador
     ) {
-
         Monolito monolito = buscarPorId(monolitoId);
 
         Especie especie = especieRepository.findById(especieId)
@@ -127,5 +139,4 @@ public class MonolitoService {
     public boolean existeIdentificador(String identificador) {
         return tomboRepository.existsByIdentificador(identificador);
     }
-    
 }

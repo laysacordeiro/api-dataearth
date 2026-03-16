@@ -45,3 +45,4 @@ public class Monolito {
     @OneToMany(mappedBy = "monolito", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tombo> tombos = new ArrayList<>();
 }
+

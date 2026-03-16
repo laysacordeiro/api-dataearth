@@ -13,14 +13,26 @@ export class MonolitoService {
 
   constructor(private http: HttpClient) {}
 
-  // --- METODOS DO MONOLITO ---
-
   salvar(monolito: Monolito): Observable<Monolito> {
     return this.http.post<Monolito>(this.apiUrl, monolito);
   }
 
   listar(): Observable<Monolito[]> {
     return this.http.get<Monolito[]>(this.apiUrl);
+  }
+
+  listarMetodos(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/metodos`);
+  }
+
+  buscarPorMetodo(metodo: string): Observable<Monolito[]> {
+    const params = new HttpParams().set('metodo', metodo);
+    return this.http.get<Monolito[]>(`${this.apiUrl}/metodo`, { params });
+  }
+
+  buscarPorEspecie(especie: string): Observable<Monolito[]> {
+    const params = new HttpParams().set('especie', especie);
+    return this.http.get<Monolito[]>(`${this.apiUrl}/especie`, { params });
   }
 
   verificarIdentificadorExistente(identificador: string): Observable<boolean> {
@@ -53,6 +65,12 @@ export class MonolitoService {
     );
   }
 
+  listarTombos(monolitoId: number): Observable<Tombo[]> {
+    return this.http.get<Tombo[]>(
+      `${this.apiUrl}/${monolitoId}/tombos`
+    );
+  }
+
   deletar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/deletar/${id}`);
   }
@@ -66,12 +84,6 @@ export class MonolitoService {
     const url = `${this.apiUrl}/${monolitoId}/especies/${especieId}`;
     return this.http.post<void>(url, { abundancia, identificador });
   }
-
- /* listarTombos(monolitoId: number): Observable<Tombo[]> {
-    return this.http.get<Tombo[]>(
-      `${this.apiUrl}/${monolitoId}/tombos`
-    );
-  }*/
 
   removerTombo(tomboId: number): Observable<void> {
     return this.http.delete<void>(

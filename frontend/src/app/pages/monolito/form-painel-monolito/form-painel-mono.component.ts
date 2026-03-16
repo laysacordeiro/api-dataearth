@@ -73,10 +73,8 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
   private monolitoService = inject(MonolitoService);
   private authService = inject(AuthService);
 
-  // ===== FORM =====
   formMonolito!: FormGroup;
 
-  // ===== ESTADO =====
   especies: Especie[] = [];
   especiesFiltradas: Especie[] = [];
   especiesSelecionada: Especie | null = null;
@@ -90,6 +88,7 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
   saving = false;
 
   proximoNumero = '001';
+  private contadorTombo = 1;
 
   mostrarInput: Record<NivelKey, boolean> = {
     reino: false,
@@ -104,7 +103,7 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.initForm();
     this.carregarEspecies();
-    this.gerarNovoNumero();
+    this.atualizarNumeroExibido();
 
     if (this.data) {
       this.formMonolito.patchValue({ especieId: this.data.id });
@@ -129,7 +128,6 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
     setTimeout(() => this.cdr.detectChanges());
   }
 
-  // ===== FORM INIT =====
   private initForm(): void {
     this.formMonolito = this.fb.group({
       especieId: [null],
@@ -148,7 +146,6 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // ===== ESPÉCIES =====
   carregarEspecies(): void {
     this.especieService.listar().subscribe(lista => {
       this.especies = lista;
@@ -183,7 +180,6 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // ===== TAXONOMIA =====
   getTaxonomiaCompleta(tax: Partial<Taxonomia>): Partial<Taxonomia>[] {
     const lista: Partial<Taxonomia>[] = [];
     let atual: any = tax;
@@ -195,11 +191,18 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
     return lista;
   }
 
-  // ===== TOMBO =====
+  private atualizarNumeroExibido(): void {
+    this.proximoNumero = this.contadorTombo.toString().padStart(3, '0');
+  }
+
   gerarNovoNumero(): void {
-    this.proximoNumero = (this.listaDeTombos.length + 1)
-      .toString()
-      .padStart(3, '0');
+    this.contadorTombo++;
+    this.atualizarNumeroExibido();
+  }
+
+  private montarIdentificadorCompleto(): string {
+    const prefixo = String(this.formMonolito.value.identificador ?? '').trim();
+    return `${prefixo}${this.proximoNumero}`;
   }
 
   adicionarEspecieALista(): void {
@@ -210,12 +213,21 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const identificadorCompleto = `${f.identificador}${this.proximoNumero}`;
+    const identificadorCompleto = this.montarIdentificadorCompleto();
+
+    const jaExisteNaLista = this.listaDeTombos.some(
+      item => item.identificador.trim().toLowerCase() === identificadorCompleto.trim().toLowerCase()
+    );
+
+    if (jaExisteNaLista) {
+      alert('Esse identificador já está na lista. Gere outro número.');
+      return;
+    }
 
     this.listaDeTombos.push({
       especieId: Number(f.especieId),
       nomeCientifico: this.especiesSelecionada?.nomeCientifico || '',
-      abundancia: f.abundancia,
+      abundancia: Number(f.abundancia),
       identificador: identificadorCompleto
     });
 
@@ -224,15 +236,16 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
       abundancia: null
     });
 
+    this.especiesSelecionada = null;
+    this.listaTaxonomiaCompleta = [];
+
     this.gerarNovoNumero();
   }
 
   removerEspecieDaLista(index: number): void {
     this.listaDeTombos.splice(index, 1);
-    this.gerarNovoNumero();
   }
 
-  // ===== SALVAR =====
   salvarMonolito(): void {
     const ids = this.listaDeTombos.map(t => (t.identificador || '').trim());
     const repetidos = ids.filter((id, i) => id && ids.indexOf(id) !== i);
@@ -248,13 +261,11 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
     }
 
     if (this.formMonolito.invalid) {
-
       Object.entries(this.formMonolito.controls).forEach(([k, c]) => {
         if (c.invalid) console.log('INVÁLIDO:', k, c.errors, c.value);
       });
 
       this.formMonolito.markAllAsTouched();
-
       alert('Preencha os campos obrigatórios do monólito.');
       return;
     }
@@ -281,64 +292,64 @@ export class FormMonolitoComponent implements OnInit, AfterViewInit {
     this.saving = true;
 
     this.monolitoService
-    .verificarStationFieldNumber(payload.stationFieldNumber)
-    .pipe(
-      switchMap(existe => {
-        if (existe) {
-          this.saving = false;
-          alert('Já existe um monólito com esse Station Field Number.');
-          throw new Error('Duplicado');
+      .verificarStationFieldNumber(payload.stationFieldNumber)
+      .pipe(
+        switchMap(existe => {
+          if (existe) {
+            this.saving = false;
+            alert('Já existe um monólito com esse Station Field Number.');
+            throw new Error('Duplicado');
+          }
+
+          const verificacoes = this.listaDeTombos.map(t =>
+            this.monolitoService.verificarIdentificadorExistente(t.identificador).pipe(
+              map(existeId => ({ identificador: t.identificador, existe: existeId }))
+            )
+          );
+
+          return forkJoin(verificacoes).pipe(
+            switchMap(resultados => {
+              const jaExistem = resultados.filter(r => r.existe).map(r => r.identificador);
+
+              if (jaExistem.length > 0) {
+                this.saving = false;
+                alert(
+                  'Já existe Tombo com este(s) identificador(es): ' +
+                  jaExistem.join(', ') +
+                  '. Use "Gerar outro número" para trocar.'
+                );
+                throw new Error('IdentificadorDuplicado');
+              }
+
+              return this.monolitoService.salvar(payload);
+            })
+          );
+        }),
+        switchMap((monolito: Monolito) => {
+          const id = monolito.id!;
+          const chamadas = this.listaDeTombos.map(t =>
+            this.monolitoService.adicionarEspecieComDados(
+              id,
+              t.especieId,
+              t.abundancia,
+              t.identificador
+            )
+          );
+          return forkJoin(chamadas);
+        }),
+        finalize(() => (this.saving = false))
+      )
+      .subscribe({
+        next: () => this.dialogRef.close(true),
+        error: err => {
+          if (err.message !== 'Duplicado' && err.message !== 'IdentificadorDuplicado') {
+            alert('Erro ao salvar: ' + err.message);
+          }
         }
-
-        const verificacoes = this.listaDeTombos.map(t =>
-          this.monolitoService.verificarIdentificadorExistente(t.identificador).pipe(
-            map(existeId => ({ identificador: t.identificador, existe: existeId }))
-          )
-        );
-
-        // Se por algum motivo não houver tombos, segue (mas você já bloqueia antes)
-        return forkJoin(verificacoes).pipe(
-          switchMap(resultados => {
-            const jaExistem = resultados.filter(r => r.existe).map(r => r.identificador);
-
-            if (jaExistem.length > 0) {
-              this.saving = false;
-              alert('Já existe Tombo com este(s) identificador(es): ' + jaExistem.join(', '));
-              throw new Error('IdentificadorDuplicado');
-            }
-
-            return this.monolitoService.salvar(payload);
-          })
-        );
-      }),
-      switchMap((monolito: Monolito) => {
-        const id = monolito.id!;
-        const chamadas = this.listaDeTombos.map(t =>
-          this.monolitoService.adicionarEspecieComDados(
-            id,
-            t.especieId,
-            t.abundancia,
-            t.identificador
-          )
-        );
-        return forkJoin(chamadas);
-      }),
-
-      finalize(() => (this.saving = false))
-    )
-    .subscribe({
-      next: () => this.dialogRef.close(true),
-      error: err => {
-        if (err.message !== 'Duplicado' && err.message !== 'IdentificadorDuplicado') {
-          alert('Erro ao salvar: ' + err.message);
-        }
-      }
-    });
+      });
   }
 
   fechar(): void {
     this.dialogRef.close();
   }
-
 }
-

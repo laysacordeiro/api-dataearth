@@ -17,19 +17,31 @@
         
         <div class="especie-card-flutuante">
           <h4>Configurar Registro: {{ especiesSelecionada.nomeCientifico }}</h4>
+
           <div class="input-row-tombo">
             <div class="field">
               <label>Abundância:</label>
               <input type="number" formControlName="abundancia" placeholder="Qtd">
             </div>
+
             <div class="field">
               <label>Identificador:</label>
+
               <div class="input-with-suffix">
                 <input type="text" formControlName="identificador" placeholder="Ex: Tombo">
                 <span class="numero-sufixo">#{{ proximoNumero }}</span>
               </div>
+
+              <button
+                type="button"
+                class="btn-gerar-outro"
+                (click)="gerarNovoNumero()"
+              >
+                Gerar outro número
+              </button>
             </div>
           </div>
+
           <button type="button" class="btn-adicionar" (click)="adicionarEspecieALista()">
             + Adicionar à Lista
           </button>

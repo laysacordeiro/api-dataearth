@@ -13,3 +13,4 @@ digite este comando no terminal "nano ~/.bashrc"
 vá até o final do arquivo 
 cole "export DB_PASSWORD=suasenha123"
 salve o arquivo
+

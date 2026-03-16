@@ -19,6 +19,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { FormTaxonomiaComponent } from './form-taxonomia/form-taxonomia.component';
 import { EspecieService } from '../../services/especie.service';
+import { MonolitoService } from '../../services/monolito.service';
 import { Especie } from '../../models/especie.model';
 import { RouterModule } from '@angular/router';
 
@@ -28,6 +29,10 @@ import { FormEditarEspecieComponent } from './form-editar-especie/form-editar-es
 import { LayoutComponent } from '../../components/mainpage-layout/layout.component';
 
 import { TaxonomiaService } from '../../services/taxonomia.service';
+import { Monolito } from '../../models/monolito.model';
+import { Tombo } from '../../models/tombo.model';
+import { forkJoin, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 
 type TaxLevelKey =
   | 'reino'
@@ -48,7 +53,7 @@ type TaxLevelKey =
 @Component({
   selector: 'app-especies',
   standalone: true,
-  templateUrl: "./especies.component.html",
+  templateUrl: './especies.component.html',
   styleUrls: ['./especies.component.scss'],
   imports: [
     CommonModule,
@@ -178,8 +183,11 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     epiteto: false,
   };
 
+  private especieMonolitoMap: Record<number, string[]> = {};
+
   constructor(
     private especieService: EspecieService,
+    private monolitoService: MonolitoService,
     private taxonomiaService: TaxonomiaService,
     private router: Router,
     private dialog: MatDialog,
@@ -188,7 +196,7 @@ export class EspecieComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.setupFilterPredicate();
-    this.carregarEspecies();
+    this.carregarDados();
     this.loadTaxOptions('reino');
   }
 
@@ -197,20 +205,59 @@ export class EspecieComponent implements OnInit, AfterViewInit {
   }
 
   alterarItensPorPagina() {
-    if (this.paginator) this.paginator._changePageSize(this.itensPorPagina);
+    if (this.paginator) {
+      this.paginator._changePageSize(this.itensPorPagina);
+    }
   }
 
-  carregarEspecies(): void {
-    this.especieService.listar().subscribe({
-      next: (data) => {
-        this.especies = data;
-        this.dataSource.data = data;
+  carregarDados(): void {
+    this.especieService.listar().pipe(
+      switchMap((especies) => {
+        this.especies = especies ?? [];
+        this.dataSource.data = this.especies;
 
-        this.buildMenuOptions(data);
-        this.applyAllFilters();
-      },
-      error: (e) => console.error('Erro ao carregar espécies:', e)
-    });
+        return this.monolitoService.listar().pipe(
+          switchMap((monolitos: Monolito[]) => {
+            if (!monolitos || monolitos.length === 0) {
+              this.especieMonolitoMap = {};
+              this.buildMenuOptions(this.especies);
+              this.applyAllFilters();
+              return of(null);
+            }
+
+            const chamadasTombos = monolitos.map((monolito) =>
+              this.monolitoService.listarTombos(monolito.id!).pipe(
+                catchError((erro) => {
+                  console.error(`Erro ao listar tombos do monólito ${monolito.id}:`, erro);
+                  return of([]);
+                })
+              )
+            );
+
+            return forkJoin(chamadasTombos).pipe(
+              switchMap((listaDeTombosPorMonolito) => {
+                this.montarMapaEspecieMonolito(monolitos, listaDeTombosPorMonolito as Tombo[][]);
+                this.buildMenuOptions(this.especies);
+                this.applyAllFilters();
+                return of(null);
+              })
+            );
+          }),
+          catchError((erro) => {
+            console.error('Erro ao carregar monólitos:', erro);
+            this.especieMonolitoMap = {};
+            this.buildMenuOptions(this.especies);
+            this.applyAllFilters();
+            return of(null);
+          })
+        );
+      }),
+      catchError((erro) => {
+        console.error('Erro ao carregar espécies:', erro);
+        this.snackBar.open('Erro ao carregar espécies.', 'Fechar', { duration: 3000 });
+        return of(null);
+      })
+    ).subscribe();
   }
 
   onSearchChange(value: string) {
@@ -236,7 +283,9 @@ export class EspecieComponent implements OnInit, AfterViewInit {
 
   toggleTaxLevel(level: TaxLevelKey) {
     this.expandedTaxLevels[level] = !this.expandedTaxLevels[level];
-    if (this.expandedTaxLevels[level]) this.loadTaxOptions(level);
+    if (this.expandedTaxLevels[level]) {
+      this.loadTaxOptions(level);
+    }
   }
 
   selectTaxOption(level: TaxLevelKey, value: string) {
@@ -245,7 +294,7 @@ export class EspecieComponent implements OnInit, AfterViewInit {
   }
 
   limparTaxonomia() {
-    (Object.keys(this.filters.taxonomia) as TaxLevelKey[]).forEach(k => {
+    (Object.keys(this.filters.taxonomia) as TaxLevelKey[]).forEach((k) => {
       this.filters.taxonomia[k] = null;
     });
     this.applyAllFilters();
@@ -258,7 +307,7 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     this.filters.autor = null;
     this.filters.monolito = null;
 
-    (Object.keys(this.filters.taxonomia) as TaxLevelKey[]).forEach(k => {
+    (Object.keys(this.filters.taxonomia) as TaxLevelKey[]).forEach((k) => {
       this.filters.taxonomia[k] = null;
     });
 
@@ -285,8 +334,10 @@ export class EspecieComponent implements OnInit, AfterViewInit {
       const autor = this.getAutorFromEspecie(e).toLowerCase();
       const okAutor = !f.autor ? true : autor === String(f.autor).toLowerCase();
 
-      const monolito = this.getMonolitoFromEspecie(e).toLowerCase();
-      const okMonolito = !f.monolito ? true : monolito === String(f.monolito).toLowerCase();
+      const monolitosDaEspecie = this.getMonolitosFromEspecie(e).map((m) => m.toLowerCase());
+      const okMonolito = !f.monolito
+        ? true
+        : monolitosDaEspecie.includes(String(f.monolito).toLowerCase());
 
       const okTax = (Object.keys(f.taxonomia || {}) as TaxLevelKey[]).every((k) => {
         const selected = f.taxonomia?.[k];
@@ -301,28 +352,39 @@ export class EspecieComponent implements OnInit, AfterViewInit {
 
   private applyAllFilters() {
     this.dataSource.filter = JSON.stringify(this.filters);
-    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   private buildMenuOptions(data: Especie[]) {
     const anos = new Set<number>();
-    data.forEach(e => {
+    data.forEach((e) => {
       const a = Number((e as any).ano);
-      if (!Number.isNaN(a)) anos.add(a);
+      if (!Number.isNaN(a)) {
+        anos.add(a);
+      }
     });
     this.anoOptions = Array.from(anos).sort((a, b) => b - a);
 
     const autores = new Set<string>();
-    data.forEach(e => {
+    data.forEach((e) => {
       const au = this.getAutorFromEspecie(e).trim();
-      if (au) autores.add(au);
+      if (au) {
+        autores.add(au);
+      }
     });
     this.autorOptions = Array.from(autores).sort((a, b) => a.localeCompare(b));
 
     const monos = new Set<string>();
-    data.forEach(e => {
-      const m = this.getMonolitoFromEspecie(e).trim();
-      if (m) monos.add(m);
+    data.forEach((e) => {
+      const lista = this.getMonolitosFromEspecie(e);
+      lista.forEach((m) => {
+        const valor = m.trim();
+        if (valor) {
+          monos.add(valor);
+        }
+      });
     });
     this.monolitoOptions = Array.from(monos).sort((a, b) => a.localeCompare(b));
   }
@@ -331,10 +393,65 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     return String((e as any).autor ?? '');
   }
 
-  private getMonolitoFromEspecie(e: Especie): string {
-    const m = (e as any).monolito;
-    if (m && typeof m === 'object') return String(m.id ?? m.nome ?? '');
-    return String((e as any).monolitoId ?? '');
+  private getMonolitosFromEspecie(e: Especie): string[] {
+    const especieId = Number((e as any).id);
+    if (!especieId || !this.especieMonolitoMap[especieId]) {
+      return [];
+    }
+    return this.especieMonolitoMap[especieId];
+  }
+
+  private montarMapaEspecieMonolito(monolitos: Monolito[], tombosPorMonolito: Tombo[][]): void {
+    const mapa: Record<number, string[]> = {};
+
+    monolitos.forEach((monolito, index) => {
+      const tombos = tombosPorMonolito[index] || [];
+      const labelMonolito = this.getMonolitoLabel(monolito);
+
+      tombos.forEach((tombo) => {
+        const especieId = Number(tombo?.especie?.id);
+
+        if (!especieId) {
+          return;
+        }
+
+        if (!mapa[especieId]) {
+          mapa[especieId] = [];
+        }
+
+        if (!mapa[especieId].includes(labelMonolito)) {
+          mapa[especieId].push(labelMonolito);
+        }
+      });
+    });
+
+    this.especieMonolitoMap = mapa;
+  }
+
+  private getMonolitoLabel(monolito: any): string {
+    const stationFieldNumber = String(monolito?.stationFieldNumber ?? '').trim();
+    const samplingNumber = monolito?.samplingNumber != null
+      ? String(monolito.samplingNumber).trim()
+      : '';
+    const id = monolito?.id != null ? String(monolito.id).trim() : '';
+
+    if (stationFieldNumber && samplingNumber) {
+      return `${stationFieldNumber} - ${samplingNumber}`;
+    }
+
+    if (stationFieldNumber) {
+      return stationFieldNumber;
+    }
+
+    if (samplingNumber) {
+      return `Amostra ${samplingNumber}`;
+    }
+
+    if (id) {
+      return `Monólito ${id}`;
+    }
+
+    return 'Monólito';
   }
 
   private especiePertenceANivel(especie: Especie, level: TaxLevelKey, selectedValue: string): boolean {
@@ -361,14 +478,14 @@ export class EspecieComponent implements OnInit, AfterViewInit {
   }
 
   private getNivelLabelByKey(level: TaxLevelKey): string | null {
-    const found = this.taxonomyLevels.find(l => l.key === level);
+    const found = this.taxonomyLevels.find((l) => l.key === level);
     return found ? found.label : null;
   }
 
   private loadTaxOptions(level: TaxLevelKey) {
     if (this.taxLoaded[level]) return;
 
-    const cfg = this.taxonomyLevels.find(l => l.key === level);
+    const cfg = this.taxonomyLevels.find((l) => l.key === level);
     if (!cfg) return;
 
     this.taxonomiaService.filtrarPorNivel(cfg.apiNivel).subscribe({
@@ -399,8 +516,10 @@ export class EspecieComponent implements OnInit, AfterViewInit {
       disableClose: false
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === true) this.carregarEspecies();
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.carregarDados();
+      }
     });
   }
 
@@ -426,10 +545,10 @@ export class EspecieComponent implements OnInit, AfterViewInit {
       disableClose: false,
     });
 
-    dialogRef.afterClosed().subscribe(resultado => {
+    dialogRef.afterClosed().subscribe((resultado) => {
       if (resultado) {
         this.snackBar.open('Espécie atualizada com sucesso!', 'Fechar', { duration: 3000 });
-        this.carregarEspecies();
+        this.carregarDados();
       }
     });
   }
@@ -441,7 +560,7 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     this.especieService.deletar(especie.id!).subscribe({
       next: () => {
         this.snackBar.open('Espécie excluída com sucesso!', 'Fechar', { duration: 3000 });
-        this.carregarEspecies();
+        this.carregarDados();
       },
       error: (erro) => {
         console.error('Erro ao excluir espécie:', erro);
