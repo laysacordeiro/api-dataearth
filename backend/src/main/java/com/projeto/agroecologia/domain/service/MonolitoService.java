@@ -24,16 +24,17 @@ public class MonolitoService {
     public MonolitoService(
             MonolitoRepository monolitoRepository,
             EspecieRepository especieRepository,
-            TomboRepository tomboRepository
-    ) {
+            TomboRepository tomboRepository) {
         this.monolitoRepository = monolitoRepository;
         this.especieRepository = especieRepository;
         this.tomboRepository = tomboRepository;
     }
 
-    /* ============================
-       MONÓLITO
-    ============================ */
+    /*
+     * ============================
+     * MONÓLITO
+     * ============================
+     */
 
     public List<Monolito> listarTodos() {
         return monolitoRepository.findAll();
@@ -46,8 +47,7 @@ public class MonolitoService {
 
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Station Field Number já cadastrado"
-            );
+                    "Station Field Number já cadastrado");
         }
 
         return monolitoRepository.save(monolito);
@@ -81,29 +81,27 @@ public class MonolitoService {
         return tomboRepository.buscarMonolitosPorEspecie(especie);
     }
 
-    /* ============================
-       TOMBO (Monólito ↔ Espécie)
-    ============================ */
+    /*
+     * ============================
+     * TOMBO (Monólito ↔ Espécie)
+     * ============================
+     */
 
     @Transactional
     public void adicionarEspecieComDados(
             Long monolitoId,
             Long especieId,
             Integer abundancia,
-            String identificador
-    ) {
+            String identificador) {
         Monolito monolito = buscarPorId(monolitoId);
 
         Especie especie = especieRepository.findById(especieId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Espécie não encontrada")
-                );
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Espécie não encontrada"));
 
         if (tomboRepository.existsByIdentificador(identificador)) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Identificador já cadastrado"
-            );
+                    "Identificador já cadastrado");
         }
 
         Tombo tombo = new Tombo();

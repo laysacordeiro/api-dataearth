@@ -23,7 +23,7 @@ public class Taxonomia {
 
     private String nome;
     private String nivel;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
     private Taxonomia parent;
@@ -43,5 +43,3 @@ public class Taxonomia {
         }
     }
 }
-
-

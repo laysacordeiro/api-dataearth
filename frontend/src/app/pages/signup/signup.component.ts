@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonModule } from '@angular/common';
 
 import { DefaultLoginLayoutComponent } from '../../components/default-login-layout/default-login-layout.component';
 import { PrimaryInputComponent } from '../../components/primary-input/primary-input.component';
@@ -12,6 +13,7 @@ import { UserService } from '../../services/user.service';
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    CommonModule,
     DefaultLoginLayoutComponent,
     PrimaryInputComponent
   ],
@@ -29,9 +31,10 @@ export class SignupComponent {
     private fb: FormBuilder
   ) {
     this.signupForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(2)]],
+      username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]]
+      confirmPassword: ['', [Validators.required]],
+      role: ['ROLE_USER', [Validators.required]]
     });
   }
 
@@ -45,7 +48,7 @@ export class SignupComponent {
       return;
     }
 
-    const { username, password, confirmPassword } = this.signupForm.value;
+    const { username, password, confirmPassword, role } = this.signupForm.value;
 
     if (password !== confirmPassword) {
       this.snackBar.open('⚠️ As senhas não coincidem.', 'Fechar', {
@@ -56,14 +59,11 @@ export class SignupComponent {
       return;
     }
 
-    // 🔒 regra mantida
-    const roles = ['ROLE_USER'];
-
-    this.userService.register({ username, password, roles }).subscribe({
+    this.userService.register({ username, password, roles: [role] }).subscribe({
       next: (res) => {
-        this.snackBar.open(res, 'Fechar', {
-          duration: 3000,
-          horizontalPosition: 'right',
+        this.snackBar.open('✅ Solicitação enviada! Aguarde a aprovação do administrador.', 'Fechar', {
+          duration: 5000,
+          horizontalPosition: 'center',
           verticalPosition: 'top'
         });
         this.router.navigate(['/login']);
@@ -82,4 +82,4 @@ export class SignupComponent {
   navigate() {
     this.router.navigate(['/login']);
   }
-}
+}

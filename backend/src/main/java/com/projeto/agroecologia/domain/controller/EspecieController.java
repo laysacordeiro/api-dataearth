@@ -21,20 +21,8 @@ public class EspecieController {
         return service.listar();
     }
 
-    @GetMapping("/autor/{autor}")
-    public List<Especie> filtrarPorAutor(@PathVariable String autor) {
-        return service.filtrarPorAutor(autor);
-    }
-
-    @GetMapping("/taxonomia")
-    public List<Especie> filtrarPorTaxonomia(
-            @RequestParam String nivel,
-            @RequestParam String nome) {
-        return service.filtrarPorTaxonomia(nivel, nome);
-    }
-
     @GetMapping("/{id}")
-    public Especie buscar(@PathVariable Long id) {
+    public Especie buscar(@PathVariable("id") Long id) {
         return service.buscar(id);
     }
 
@@ -44,12 +32,13 @@ public class EspecieController {
     }
 
     @PutMapping("/editar/{id}")
-    public Especie atualizar(@PathVariable Long id, @RequestBody Especie especie) {
+    public Especie atualizar(@PathVariable("id") Long id, @RequestBody Especie especie) {
         return service.atualizar(id, especie);
     }
 
     @DeleteMapping("/deletar/{id}")
-    public void excluir(@PathVariable Long id) {
+    public void excluir(@PathVariable("id") Long id) {
         service.excluir(id);
     }
 }
+

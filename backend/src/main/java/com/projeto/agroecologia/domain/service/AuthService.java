@@ -1,7 +1,7 @@
 package com.projeto.agroecologia.domain.service;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,9 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.projeto.agroecologia.domain.enume.RoleName;
-import com.projeto.agroecologia.domain.model.Role;
 import com.projeto.agroecologia.domain.model.User;
-import com.projeto.agroecologia.domain.repository.RoleRepository;
 import com.projeto.agroecologia.domain.repository.UserRepository;
 import com.projeto.agroecologia.domain.utils.JwtUtils;
 
@@ -24,9 +22,6 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -35,24 +30,17 @@ public class AuthService {
     @Autowired
     private JwtUtils jwtUtils;
 
-    /* =========================
-       LOGIN
-       ========================= */
-    public String login(String username, String password) {
+    @Autowired
+    private SolicitacaoService solicitacaoService;
 
+    public String login(String username, String password) {
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(username, password)
         );
-
-        // ✅ Token deve ser gerado a partir do Authentication
         return jwtUtils.generateToken(authentication);
     }
 
-    /* =========================
-       REGISTRO
-       ========================= */
     public void registerUser(String username, String password, String roleStr) {
-
         if (userRepository.existsByUsername(username)) {
             throw new RuntimeException("Usuário já existe");
         }
@@ -71,19 +59,15 @@ public class AuthService {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-
-        Role role = roleRepository.findByName(roleEnum)
-                .orElseThrow(() -> new RuntimeException("Cargo não encontrado"));
-
-        user.setRoles(Set.of(role));
+        user.setEnabled(false);
+        user.setRoles(new HashSet<>());
 
         userRepository.save(user);
+
+        solicitacaoService.criarSolicitacao(user, roleStr);
     }
 
-    /* =========================
-       LISTAGEM (recomendo mover depois)
-       ========================= */
     public List<User> listarUsuarios() {
         return userRepository.findAll();
     }
-}
+}

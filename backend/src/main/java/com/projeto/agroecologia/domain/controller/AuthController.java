@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.projeto.agroecologia.domain.model.User;
 import com.projeto.agroecologia.domain.service.AuthService;
-import com.projeto.agroecologia.domain.dto.LoginRequest;
-import com.projeto.agroecologia.domain.dto.RegisterRequest;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,41 +18,29 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    /* =========================
-    LOGIN
-    ========================= */
     @PostMapping(value = "/login", consumes = "application/x-www-form-urlencoded")
     public ResponseEntity<Map<String, String>> login(
-            @RequestParam String username, // Mudado de @RequestBody para @RequestParam
-            @RequestParam String password) {
+            @RequestParam("username") String username,
+            @RequestParam("password") String password) {
 
         String token = authService.login(username, password);
         return ResponseEntity.ok(Map.of("token", token));
     }
 
-    /* =========================
-    REGISTRO
-    ========================= */
     @PostMapping(value = "/register", consumes = "application/x-www-form-urlencoded")
     public ResponseEntity<?> register(
-            @RequestParam String username,
-            @RequestParam String password,
-            @RequestParam List<String> roles) { // Recebe a lista de roles enviada pelo append do Angular
+            @RequestParam("username") String username,
+            @RequestParam("password") String password,
+            @RequestParam("roles") List<String> roles) {
 
-        // Adapte o seu authService para receber a lista ou a primeira role
-        authService.registerUser(username, password, roles.get(0)); 
+        authService.registerUser(username, password, roles.get(0));
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Usuário registrado com sucesso");
+                .body("Solicitação de acesso enviada. Aguarde a aprovação do administrador.");
     }
 
-    /* =========================
-       LISTAR USUÁRIOS
-       (recomendo mover depois)
-       ========================= */
     @GetMapping("/usuarios")
     public List<User> listarUsuarios() {
         return authService.listarUsuarios();
     }
 }
-

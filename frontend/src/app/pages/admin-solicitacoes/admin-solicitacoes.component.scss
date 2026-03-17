@@ -1,0 +1,75 @@
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+/* Conteúdo */
+.content {
+  flex: 1;
+  padding: 1rem 2rem;
+  overflow-y: auto;
+}
+
+/* Card principal */
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-header h2 {
+  color: #0f4a2a;
+  margin: 0;
+}
+
+/* Tabela */
+table {
+  width: 100%;
+}
+
+.acoes-cell {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+}
+
+.btn-access {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-access:hover {
+  transform: scale(1.1);
+}
+
+.btn-accept {
+  color: #22c55e;
+}
+
+.btn-deny {
+  color: #ef4444;
+}
+
+.badge {
+  background: #e0e7ff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #3730a3;
+  font-weight: 600;
+}
+
+
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}

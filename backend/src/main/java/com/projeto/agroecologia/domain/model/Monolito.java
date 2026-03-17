@@ -20,17 +20,17 @@ public class Monolito {
     private Long id;
 
     @NotBlank
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String stationFieldNumber;
 
     @NotNull
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Integer samplingNumber;
-    
+
     private String metodo;
 
     @NotBlank
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String profundidadeSolo;
 
     private Integer dia;
@@ -42,7 +42,13 @@ public class Monolito {
     @Column(columnDefinition = "TEXT")
     private String remarks;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parcela_id")
+    private Parcela parcela;
+
     @OneToMany(mappedBy = "monolito", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tombo> tombos = new ArrayList<>();
-}
 
+    @Column(name = "description", length = 255)
+    private String description;
+}

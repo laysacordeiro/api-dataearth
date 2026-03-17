@@ -26,31 +26,37 @@ import com.projeto.agroecologia.domain.service.CustomUserDetailsService;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired private JwtAuthenticationFilter jwtAuthFilter;
-    @Autowired private CustomUserDetailsService userDetailsService;
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthFilter;
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-    .requestMatchers("/auth/**").permitAll()
-    .requestMatchers("/taxonomias/**")
-        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
-    .requestMatchers("/especies/**")
-        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
-    .requestMatchers("/monolitos/**")
-        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
-    .anyRequest()
-        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
-)
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); 
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/taxonomias/**")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+                        .requestMatchers("/especies/**")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+                        .requestMatchers("/monolitos/**")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+                        .requestMatchers("/parcelas/**")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+                        .requestMatchers("/localidades/**")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+                        .requestMatchers("/climas/**")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC")
+                        .anyRequest()
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_RESC", "ADMIN", "RESC"))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -77,7 +83,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:4200"); 
+        config.addAllowedOrigin("http://localhost:4200");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
@@ -86,5 +92,3 @@ public class SecurityConfig {
         return source;
     }
 }
-
-

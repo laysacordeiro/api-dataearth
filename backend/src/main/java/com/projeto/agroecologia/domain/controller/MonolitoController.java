@@ -29,8 +29,7 @@ public class MonolitoController {
                 monolitoId,
                 especieId,
                 dados.getAbundancia(),
-                dados.getIdentificador()
-        );
+                dados.getIdentificador());
         return ResponseEntity.status(201).build();
     }
 

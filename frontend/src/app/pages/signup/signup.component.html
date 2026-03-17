@@ -1,39 +1,59 @@
 <div class="Grid">
   <div class="Grid2">
-    <form [formGroup]="signupForm" (ngSubmit)="submit()">
-      <div class="shell">
-      <div class="form-group">
-        <label for="username">Email</label>
-        <input id="username" type="text" formControlName="username" placeholder="Digite seu email">
-        <small *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched">
-          O email é obrigatório.
-        </small>
+    <div class="row">
+      <div class="text1">
+        <img src="./../../assets/image/reciclagem-logo.jpg" alt="reciclagem" class="iconvalue">
       </div>
-
-      <div class="form-group">
-        <label for="password">Senha</label>
-        <input id="password" type="password" formControlName="password" placeholder="Crie uma senha">
-        <small *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
-          A senha deve ter no mínimo 6 caracteres.
-        </small>
-      </div>
-
-      <div class="form-group">
-        <label for="confirmPassword">Confirmar senha</label>
-        <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Repita sua senha">
-        <small *ngIf="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched">
-          Confirme sua senha.
-        </small>
-      </div>
-      <div class="form-group">
-      <button type="submit" [disabled]="signupForm.invalid">Registrar</button>
-
-      <p class="login-text">
-        Já tem conta?
-        <a (click)="navigate()">Entrar</a>
-      </p>
-      </div>
-      </div>
-    </form>
+      <h1>Reserva Biológica do Gurupi</h1>
+      <p>Faça a solicitação para adentrar no sistema</p>
     </div>
+    <div class="row2">
+      <form [formGroup]="signupForm" (ngSubmit)="submit()">
+        <div class="shell">
+
+          <div class="form-group">
+            <label for="username">Email</label>
+            <input id="username" type="email" formControlName="username" placeholder="Digite seu email">
+            <small *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched">
+              Informe um email válido.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Senha</label>
+            <input id="password" type="password" formControlName="password" placeholder="Crie uma senha">
+            <small *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+              A senha deve ter no mínimo 6 caracteres.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirmar senha</label>
+            <input id="confirmPassword" type="password" formControlName="confirmPassword"
+              placeholder="Repita sua senha">
+            <small *ngIf="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched">
+              Confirme sua senha.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="role">Tipo de acesso solicitado</label>
+            <select id="role" formControlName="role">
+              <option value="ROLE_USER">Visitante — somente visualização</option>
+              <option value="ROLE_RESC">Pesquisador — acesso ao banco de dados</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" [disabled]="signupForm.invalid">Solicitar acesso</button>
+            <p class="login-text">
+              Já tem conta?
+              <a (click)="navigate()">Entrar</a>
+            </p>
+          </div>
+
+        </div>
+      </form>
     </div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<app-layout>
+  <div class="content">
+    <div class="card">
+      <div class="card-header">
+        <h2>Solicitações de Acesso</h2>
+      </div>
+
+      <p *ngIf="loading" style="padding: 1rem;">Carregando...</p>
+
+      <p *ngIf="!loading && solicitacoes.length === 0" style="padding: 1rem; color: #666;">
+        Nenhuma solicitação pendente no momento.
+      </p>
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="!loading && solicitacoes.length > 0">
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let s"> {{ s.user.username }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cargo">
+          <th mat-header-cell *matHeaderCellDef> Cargo Solicitado </th>
+          <td mat-cell *matCellDef="let s">
+            <span class="badge">{{ roleLabel(s.requestedRole) }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="data">
+          <th mat-header-cell *matHeaderCellDef> Data </th>
+          <td mat-cell *matCellDef="let s"> {{ s.createdAt | date: 'dd/MM/yyyy HH:mm' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acoes">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let s" class="acoes-cell">
+            <button mat-icon-button class="btn-access btn-accept" matTooltip="Aceitar" (click)="aceitar(s.id)">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+            <button mat-icon-button class="btn-access btn-deny" matTooltip="Negar" (click)="negar(s.id)">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div class="pagination">
+        <span>Itens por página:</span>
+        <select [(ngModel)]="itensPorPagina" (change)="alterarItensPorPagina()">
+          <option *ngFor="let qtd of [5,10,20]" [value]="qtd">{{ qtd }}</option>
+        </select>
+        <span>{{ dataSource.filteredData.length }} total</span>
+      </div>
+
+      <mat-paginator #paginator [pageSize]="itensPorPagina" [pageSizeOptions]="[5,10,20]"
+        style="display:none"></mat-paginator>
+
+    </div>
+  </div>
+</app-layout>

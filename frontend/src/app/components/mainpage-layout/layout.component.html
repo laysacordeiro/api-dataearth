@@ -8,36 +8,34 @@
 
     <nav class="nav-menu">
 
+      <button *ngIf="authService.hasRole('ROLE_ADMIN')" (click)="irParaSolicitacoes()">
+        <img src="./../../assets/image/icone-password.png" class="icon">
+        Painel de Solicitações
+      </button>
+
+
       <!-- Visitante -->
-      <button
-        *ngIf="authService.hasRole('ROLE_USER')"
-        (click)="irParaVisitante()">
+      <button *ngIf="authService.hasRole('ROLE_USER')" (click)="irParaVisitante()">
         <img src="./../../assets/image/icone-password.png" class="icon">
         Visitante
       </button>
 
       <!-- Dashboard -->
-      <button
-        *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')"
-        (click)="irParaMainpage()"
+      <button *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="irParaMainpage()"
         [class.active]="rotaAtiva === 'mainpage'">
         <img src="./../../assets/image/icon-home.png" class="icon">
         Dashboard
       </button>
 
       <!-- Espécies -->
-      <button
-        *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')"
-        (click)="irParaEspecies()"
+      <button *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="irParaEspecies()"
         [class.active]="rotaAtiva === 'especies'">
         <img src="./../../assets/image/icon-especie.png" class="icon">
         Espécies
       </button>
 
       <!-- Monolito -->
-      <button
-        *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')"
-        (click)="irParaMonolito()">
+      <button *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="irParaMonolito()">
         <img src="./../../assets/image/icon-monolito.png" class="icon">
         Monolito
       </button>

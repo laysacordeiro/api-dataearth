@@ -1,0 +1,1 @@
+ALTER TABLE monolito ADD COLUMN description VARCHAR(255);

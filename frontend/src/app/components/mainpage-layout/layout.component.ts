@@ -17,7 +17,7 @@ export class LayoutComponent {
   constructor(
     public authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.isAdmin = this.authService.isAdmin();
@@ -42,7 +42,9 @@ export class LayoutComponent {
   irParaMonolito(): void {
     this.router.navigate(['/monolitos']);
   }
-
+  irParaSolicitacoes() {
+    this.router.navigate(['/admin/solicitacoes']);
+  }
   logout() {
     this.authService.logout();
     localStorage.clear();

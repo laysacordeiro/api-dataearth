@@ -22,7 +22,7 @@ public class TaxonomiaController {
     }
 
     @GetMapping("/nivel/{nivel}")
-    public List<Taxonomia> filtrarPorNivel(@PathVariable String nivel) {
+    public List<Taxonomia> filtrarPorNivel(@PathVariable("nivel") String nivel) {
         return service.filtrarPorNivel(nivel);
     }
 
@@ -32,14 +32,13 @@ public class TaxonomiaController {
     }
 
     @PutMapping("/editar/{id}")
-    public Taxonomia atualizar(@PathVariable Long id, @RequestBody Taxonomia taxonomia) {
+    public Taxonomia atualizar(@PathVariable("id") Long id, @RequestBody Taxonomia taxonomia) {
         return service.atualizar(id, taxonomia);
     }
 
     @DeleteMapping("/deletar/{id}")
-    public void excluir(@PathVariable Long id) {
+    public void excluir(@PathVariable("id") Long id) {
         service.excluir(id);
     }
 }
-
 
