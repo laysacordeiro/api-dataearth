@@ -1,4 +1,4 @@
-<h1 align="center">🌿 API DataEarth — Sistema de Gerenciamento Agroecológico</h1>
+<h1 align="center">🌿 Desenvolvimento de um Sistema de armazenamento e monitoramento ecológico para Reserva Biológica do Gurupi</h1>
 
 <p align="center">
   Plataforma full-stack para catalogação e monitoramento de espécies, parcelas e unidades de conservação da biodiversidade brasileira.
