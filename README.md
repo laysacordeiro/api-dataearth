@@ -24,8 +24,6 @@
 4. [Estrutura do Projeto](#-estrutura-do-projeto)
 5. [Como Começar](#-como-começar)
 6. [Uso e Endpoints da API](#-uso-e-endpoints-da-api)
-7. [Contribuindo](#-contribuindo)
-8. [Licença](#-licença)
 
 ---
 
