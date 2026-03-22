@@ -4,6 +4,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -16,38 +17,42 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtils {
 
-    private static final String SECRET_KEY =
-        "cXVlbS1sZS1zZW1wcmUtZ2FuaGEtcXVlbS1jYWl1LWFzc2ltLWxldmFudGEK";
+    @Value("${app.jwt.secret}")
+    private String secretKey;
 
-    private static final long EXPIRATION_TIME = 86400000; // 1 dia
+    @Value("${app.jwt.expiration}")
+    private long expirationTime;
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    /* =========================
-       GERAR TOKEN
-       ========================= */
+    /*
+     * =========================
+     * GERAR TOKEN
+     * =========================
+     */
     public String generateToken(Authentication authentication) {
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(
-                    "roles",
-                    authentication.getAuthorities()
-                        .stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .toList()
-                )
+                        "roles",
+                        authentication.getAuthorities()
+                                .stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .toList())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    /* =========================
-       VALIDAÇÃO
-       ========================= */
+    /*
+     * =========================
+     * VALIDAÇÃO
+     * =========================
+     */
     public boolean validateToken(String token) {
         try {
             return !isExpired(token);
@@ -56,9 +61,11 @@ public class JwtUtils {
         }
     }
 
-    /* =========================
-       EXTRAÇÕES
-       ========================= */
+    /*
+     * =========================
+     * EXTRAÇÕES
+     * =========================
+     */
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
@@ -67,9 +74,11 @@ public class JwtUtils {
         return extractAllClaims(token).get("roles", List.class);
     }
 
-    /* =========================
-       MÉTODOS INTERNOS
-       ========================= */
+    /*
+     * =========================
+     * MÉTODOS INTERNOS
+     * =========================
+     */
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
