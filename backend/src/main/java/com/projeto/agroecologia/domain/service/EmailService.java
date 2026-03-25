@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    @Async
     private void send(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
@@ -24,13 +26,16 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    @Async
     public void notifyAdmin(String adminEmail, String username, String userEmail, String requestedRole) {
         String subject = "Nova solicitação de acesso - " + username;
-        String body = "O usuário '" + username + "' (" + userEmail + ") solicitou acesso com o cargo: " + requestedRole + ".\n\n"
+        String body = "O usuário '" + username + "' (" + userEmail + ") solicitou acesso com o cargo: " + requestedRole
+                + ".\n\n"
                 + "Acesse o sistema de administração para aceitar ou negar a solicitação.";
         send(adminEmail, subject, body);
     }
 
+    @Async
     public void sendAcceptedEmail(String to, String username) {
         String subject = "Seu acesso foi aprovado!";
         String body = "Olá, " + username + "!\n\n"
@@ -40,6 +45,7 @@ public class EmailService {
         send(to, subject, body);
     }
 
+    @Async
     public void sendDeniedEmail(String to, String username) {
         String subject = "Solicitação de acesso negada";
         String body = "Olá, " + username + "!\n\n"

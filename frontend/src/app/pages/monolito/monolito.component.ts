@@ -23,6 +23,7 @@ import { LayoutComponent } from '../../components/mainpage-layout/layout.compone
 import { FormMonolitoComponent } from './form-painel-monolito/form-painel-mono.component';
 import { MonolitoService } from '../../services/monolito.service';
 import { EspecieService } from '../../services/especie.service';
+import { AuthService } from '../../services/auth.service';
 
 import { Monolito } from '../../models/monolito.model';
 import { Especie } from '../../models/especie.model';
@@ -80,6 +81,7 @@ export class MonolitoComponent implements OnInit, AfterViewInit {
   constructor(
     private monolitoService: MonolitoService,
     private especieService: EspecieService,
+    public authService: AuthService,
     private router: Router,
     private dialog: MatDialog,
     private snackBar: MatSnackBar

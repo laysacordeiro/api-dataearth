@@ -29,6 +29,7 @@ import { FormEditarEspecieComponent } from './form-editar-especie/form-editar-es
 import { LayoutComponent } from '../../components/mainpage-layout/layout.component';
 
 import { TaxonomiaService } from '../../services/taxonomia.service';
+import { AuthService } from '../../services/auth.service';
 import { Monolito } from '../../models/monolito.model';
 import { Tombo } from '../../models/tombo.model';
 import { forkJoin, of } from 'rxjs';
@@ -189,6 +190,7 @@ export class EspecieComponent implements OnInit, AfterViewInit {
     private especieService: EspecieService,
     private monolitoService: MonolitoService,
     private taxonomiaService: TaxonomiaService,
+    public authService: AuthService,
     private router: Router,
     private dialog: MatDialog,
     private snackBar: MatSnackBar

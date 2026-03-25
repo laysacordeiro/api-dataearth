@@ -39,11 +39,18 @@ export class LayoutComponent {
     this.router.navigate(['/visitante']);
   }
 
+  irParaWelcome() {
+    this.router.navigate(['/welcome']);
+  }
+
   irParaMonolito(): void {
     this.router.navigate(['/monolitos']);
   }
   irParaSolicitacoes() {
     this.router.navigate(['/admin/solicitacoes']);
+  }
+  irParaParcelas() {
+    this.router.navigate(['/parcelas']);
   }
   logout() {
     this.authService.logout();

@@ -62,10 +62,12 @@ export class AdminSolicitacoesComponent implements OnInit, AfterViewInit {
 
   carregar(): void {
     this.loading = true;
-    this.solicitacaoService.listarPendentes().subscribe({
+    this.solicitacaoService.listarTodas().subscribe({
       next: (data) => {
-        this.solicitacoes = data;
-        this.dataSource.data = data;
+        // Filtra apenas solicitações não processadas (PENDING)
+        const pendentes = data.filter(sol => sol.status === 'PENDING');
+        this.solicitacoes = pendentes;
+        this.dataSource.data = pendentes;
         this.loading = false;
       },
       error: () => {

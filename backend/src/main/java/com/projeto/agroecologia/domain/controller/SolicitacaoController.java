@@ -19,8 +19,8 @@ public class SolicitacaoController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public List<Solicitacao> listarPendentes() {
-        return solicitacaoService.listarPendentes();
+    public List<Solicitacao> listarTodas() {
+        return solicitacaoService.listarTodas();
     }
 
     @PutMapping("/{id}/aceitar")

@@ -188,7 +188,8 @@ O sistema adota uma arquitetura **cliente-servidor desacoplada**, onde o backend
             │   ├── 📁 mainpage/          → Dashboard principal
             │   ├── 📁 especies/          → Gerenciamento de espécies
             │   ├── 📁 monolito/          → Gerenciamento de monolitos
-            │   ├── 📁 visitante/         → Área do visitante
+            │   ├── 📁 parcela/           → Gerenciamento de parcelas
+            │   ├── 📁 welcome/           → Tela de boas-vindas / visitante
             │   └── 📁 admin-solicitacoes/→ Painel administrativo
             ├── 📁 components/            → Componentes reutilizáveis
             ├── 📁 services/              → Serviços HTTP Angular
@@ -336,7 +337,8 @@ curl -X POST http://localhost:8080/auth/login \
 | `/mainpage` | Autenticado | Dashboard principal |
 | `/especies` | Autenticado | Gerenciamento de espécies |
 | `/monolitos` | Autenticado | Gerenciamento de monolitos |
-| `/visitante` | Autenticado | Área de visualização para visitantes |
+| `/parcelas` | Autenticado | Gerenciamento de parcelas |
+| `/welcome` | Autenticado | Tela de boas-vindas / visitante |
 | `/admin/solicitacoes` | Admin | Painel de aprovação de usuários |
 
 ---

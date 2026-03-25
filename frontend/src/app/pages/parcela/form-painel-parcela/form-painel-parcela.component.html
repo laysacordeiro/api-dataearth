@@ -1,0 +1,126 @@
+<div class="container">
+  <h1>Nova Parcela</h1>
+
+  <form [formGroup]="formParcela" (ngSubmit)="salvarParcela()">
+
+    <!-- DADOS GERAIS -->
+    <div class="form-wrapper">
+      <div class="section">
+        <h3>Dados Gerais</h3>
+        <label>Proprietário *</label>
+        <input type="text" formControlName="proprietario" placeholder="Ex: João da Silva">
+
+        <label>Uso da Terra *</label>
+        <input type="text" formControlName="usoDaTerra" placeholder="Ex: Agricultura">
+
+        <label>Data do Evento *</label>
+        <div class="date-row">
+          <input type="date" formControlName="dataDoEvento">
+        </div>
+
+        <label>Descrição</label>
+        <textarea formControlName="description" rows="3"></textarea>
+
+        <label>Monólito Associado</label>
+        <select formControlName="monolitoId">
+          <option [ngValue]="null">Sem associação (Opcional)</option>
+          <option *ngFor="let m of monolitos" [ngValue]="m.id">
+            {{ m.stationFieldNumber }}
+          </option>
+        </select>
+        <small style="color:#666; font-size:12px;">Associe a um monólito previamente criado</small>
+      </div>
+
+      <!-- CLIMA -->
+      <div class="section" formGroupName="clima">
+        <h3>Clima</h3>
+        <label>Koppen *</label>
+        <input type="text" formControlName="clima_koppen" placeholder="Ex: Aw">
+
+        <label>Temperatura Média (°C) *</label>
+        <input type="number" formControlName="avg_temp" step="0.1">
+
+        <label>Precipitação Média (mm) *</label>
+        <input type="number" formControlName="avg_precip" step="0.1">
+
+        <label>Descrição *</label>
+        <textarea formControlName="description" rows="2"></textarea>
+      </div>
+    </div>
+
+    <!-- AMBIENTE -->
+    <div class="form-wrapper" style="margin-top:20px;">
+
+      <!-- ENVIRONMENT -->
+      <div class="section" formGroupName="environment">
+        <h3>Ambiente</h3>
+        <label>Tipo de Vegetação *</label>
+        <input type="text" formControlName="vegeType">
+
+        <label>Tipo de Preparo *</label>
+        <input type="text" formControlName="prepType">
+
+        <label>Tipo de Solo *</label>
+        <input type="text" formControlName="soilType">
+
+        <label>Vegetação Atual *</label>
+        <input type="text" formControlName="currentVege">
+
+        <label>Vegetação Original *</label>
+        <input type="text" formControlName="originalVege">
+
+        <label>Idade da Vegetação (anos) *</label>
+        <input type="number" formControlName="vegeAge" min="0">
+
+        <label>Bioma *</label>
+        <input type="text" formControlName="biome">
+      </div>
+
+      <!-- LOCALIDADE -->
+      <div class="section" formGroupName="localidade">
+        <h3>Localidade</h3>
+        <label>Locality *</label>
+        <input type="text" formControlName="locality">
+
+        <label>County (Condado/Município) *</label>
+        <input type="text" formControlName="county">
+
+        <label>Estado *</label>
+        <input type="text" formControlName="state">
+
+        <label>País *</label>
+        <input type="text" formControlName="country">
+
+        <label>Continente *</label>
+        <input type="text" formControlName="continent">
+
+        <div style="display:flex; gap:10px;">
+          <div style="flex:1">
+            <label>Latitude *</label>
+            <input type="text" formControlName="latitude">
+          </div>
+          <div style="flex:1">
+            <label>Longitude *</label>
+            <input type="text" formControlName="longitude">
+          </div>
+        </div>
+
+        <label>Nome UC *</label>
+        <input type="text" formControlName="name_uc">
+
+        <label>Classe UC *</label>
+        <input type="text" formControlName="class_uc">
+      </div>
+    </div>
+
+    <!-- BOTOES DE ACAO -->
+    <div class="buttons">
+      <button type="button" class="cancelar" (click)="fechar()" [disabled]="saving">Cancelar</button>
+      <button type="submit" class="salvar" [disabled]="saving || formParcela.invalid">
+        <span *ngIf="!saving">Salvar</span>
+        <mat-spinner *ngIf="saving" diameter="24" color="accent" style="display:inline-block;"></mat-spinner>
+      </button>
+    </div>
+
+  </form>
+</div>

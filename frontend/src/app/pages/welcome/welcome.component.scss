@@ -1,0 +1,79 @@
+.welcome-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 85vh;
+  /* subtraindo margens da app layout possivelmente */
+  padding: 20px;
+}
+
+.welcome-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 650px;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-image-header {
+  height: 200px;
+  background-image: url('../../../assets/image/Gurupi.jpg');
+  background-size: cover;
+  background-position: center 40%;
+}
+
+.card-body {
+  padding: 30px 40px 40px;
+}
+
+.logo-img {
+  max-width: 140px;
+  margin-bottom: 25px;
+}
+
+h1 {
+  color: #15991e;
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+p {
+  color: #444;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.info-badges {
+  margin-top: 35px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  cursor: pointer;
+}
+
+.badge {
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.badge-especie {
+  background-color: #2196f3;
+}
+
+.badge-monolito {
+  background-color: #4caf50;
+}
+
+.badge-parcela {
+  background-color: #ff9800;
+}

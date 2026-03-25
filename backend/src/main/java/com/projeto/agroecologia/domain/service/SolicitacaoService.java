@@ -43,8 +43,8 @@ public class SolicitacaoService {
         emailService.notifyAdmin(adminEmail, user.getUsername(), user.getUsername(), requestedRole);
     }
 
-    public List<Solicitacao> listarPendentes() {
-        return solicitacaoRepository.findByStatus(SolicitacaoStatus.PENDING);
+    public List<Solicitacao> listarTodas() {
+        return solicitacaoRepository.findAll();
     }
 
     public void aceitar(Long id) {

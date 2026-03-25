@@ -270,3 +270,86 @@
     border: 1px solid #f1f3f6; /* $gray-secondary-bg */
   }
 }
+
+/* Estilos para o details de solicitacoes */
+.tabela-details {
+  margin-top: 15px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  background-color: #fff;
+  overflow: hidden;
+
+  summary {
+    padding: 15px 20px;
+    font-weight: 600;
+    color: #444;
+    background-color: #fcfcfc;
+    cursor: pointer;
+    list-style: none; /* oculta a seta padrão no firefox */
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.2s;
+
+    &::-webkit-details-marker {
+      display: none; /* oculta no safari/chrome antigo */
+    }
+
+    &:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Seta customizada */
+    &::before {
+      content: '\25B6';
+      font-size: 0.8rem;
+      margin-right: 10px;
+      transition: transform 0.2s ease-in-out;
+      color: #888;
+    }
+  }
+
+  &[open] {
+    summary {
+      border-bottom: 1px solid #eee;
+      &::before {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  .table-responsive {
+    padding: 10px;
+    overflow-x: auto;
+  }
+}
+
+.badge-count {
+  background-color: #7001fd;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  margin-left: 10px;
+}
+
+.badge-warning {
+  background-color: #fcf3d5;
+  color: #8a6d3b;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.badge-success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.badge-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 4px 8px;
+  border-radius: 4px;
+}

@@ -14,7 +14,8 @@ import { User } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service'; 
 import { LayoutComponent } from '../../components/mainpage-layout/layout.component';  
 import { UserService } from '../../services/user.service';
-
+import { SolicitacaoService } from '../../services/solicitacao.service';
+import { Solicitacao } from '../../models/solicitacao.model';
 
 @Component({
   standalone: true,
@@ -47,11 +48,24 @@ export class MainpageComponent implements OnInit, AfterViewInit {
   isLoading: boolean = true; 
   emailUsuario: string = 'Desconhecido';
 
+  // Adições para solicitações
+  solicitacoesPendentes: Solicitacao[] = [];
+  solicitacoesAceitas: Solicitacao[] = [];
+  solicitacoesNegadas: Solicitacao[] = [];
+  
+  statusMap: { [key: string]: string } = {
+    'PENDING': 'Não verificado',
+    'ACCEPTED': 'Aceito',
+    'DENIED': 'Negado'
+  };
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private authService: AuthService, 
-    private router: Router, public userService: UserService
+    private router: Router, 
+    public userService: UserService,
+    private solicitacaoService: SolicitacaoService
   ) { }
 
   roleMap: any = {
@@ -64,17 +78,31 @@ export class MainpageComponent implements OnInit, AfterViewInit {
     this.isAdmin = this.authService.isAdmin();
     console.log('Admin detected:', this.isAdmin);
     this.carregarUsuarios();
+    this.carregarSolicitacoes();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
 
+  carregarSolicitacoes(): void {
+    this.solicitacaoService.listarTodas().subscribe({
+      next: (solicitacoes: Solicitacao[]) => {
+        this.solicitacoesPendentes = solicitacoes.filter(s => s.status === 'PENDING');
+        this.solicitacoesAceitas = solicitacoes.filter(s => s.status === 'ACCEPTED');
+        this.solicitacoesNegadas = solicitacoes.filter(s => s.status === 'DENIED');
+      },
+      error: (err) => console.error('Erro ao carregar solicitações:', err)
+    });
+  }
+
   carregarUsuarios(): void {
     this.userService.listarTodos().subscribe({
       next: (usuarios: User[]) => {
         console.log('Dados recebidos da API:', usuarios);
-        this.dataSource.data = usuarios;
+        // Exibe apenas usuários que possuem um cargo atribuído (já foram aceitos ou são admins)
+        const usuariosAceitos = usuarios.filter(u => u.roles && u.roles.length > 0);
+        this.dataSource.data = usuariosAceitos;
         this.isLoading = false; 
       },
       error: (err) => {
@@ -109,6 +137,10 @@ export class MainpageComponent implements OnInit, AfterViewInit {
 
   getRoleStyle(roleName: string) {
     return this.roleMap[roleName] || { label: roleName, css: 'badge-default' };
+  }
+
+  getStatusLabel(status: string): string {
+    return this.statusMap[status] || status;
   }
 
   editar(usuario: User): void {

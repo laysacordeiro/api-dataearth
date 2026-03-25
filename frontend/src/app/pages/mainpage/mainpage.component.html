@@ -52,6 +52,115 @@
       </div>
     </div>
 
+    <!-- Novo Card para Solicitações -->
+    <div class="card mt-20" style="margin-top: 20px;">
+      <div class="card-header">
+        <h2>Gerenciamento de Solicitações</h2>
+      </div>
+
+      <!-- SOLICITAÇÕES NÃO PROCESSADAS -->
+      <details class="tabela-details" open>
+        <summary>SOLICITAÇÕES NÃO PROCESSADAS <span class="badge-count">{{ solicitacoesPendentes.length }}</span></summary>
+        <div class="table-responsive">
+          <table class="mat-elevation-z2 custom-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome (E-mail)</th>
+                <th>Cargo Solicitado</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sol of solicitacoesPendentes">
+                <td>{{ sol.id }}</td>
+                <td>{{ sol.user?.username }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getRoleStyle(sol.requestedRole).css">
+                    {{ getRoleStyle(sol.requestedRole).label }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-warning">{{ getStatusLabel(sol.status) }}</span>
+                </td>
+              </tr>
+              <tr *ngIf="solicitacoesPendentes.length === 0">
+                <td colspan="4" style="text-align: center; color: #888;">Nenhuma solicitação pendente</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <!-- ACEITO RECENTEMENTE -->
+      <details class="tabela-details">
+        <summary>ACEITO RECENTEMENTE <span class="badge-count">{{ solicitacoesAceitas.length }}</span></summary>
+        <div class="table-responsive">
+          <table class="mat-elevation-z2 custom-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome (E-mail)</th>
+                <th>Cargo Solicitado</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sol of solicitacoesAceitas">
+                <td>{{ sol.id }}</td>
+                <td>{{ sol.user?.username }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getRoleStyle(sol.requestedRole).css">
+                    {{ getRoleStyle(sol.requestedRole).label }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-success">{{ getStatusLabel(sol.status) }}</span>
+                </td>
+              </tr>
+              <tr *ngIf="solicitacoesAceitas.length === 0">
+                <td colspan="4" style="text-align: center; color: #888;">Nenhuma solicitação aceita recentemente</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <!-- NEGADO RECENTEMENTE -->
+      <details class="tabela-details">
+        <summary>NEGADO RECENTEMENTE <span class="badge-count">{{ solicitacoesNegadas.length }}</span></summary>
+        <div class="table-responsive">
+          <table class="mat-elevation-z2 custom-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome (E-mail)</th>
+                <th>Cargo Solicitado</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sol of solicitacoesNegadas">
+                <td>{{ sol.id }}</td>
+                <td>{{ sol.user?.username }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getRoleStyle(sol.requestedRole).css">
+                    {{ getRoleStyle(sol.requestedRole).label }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-danger">{{ getStatusLabel(sol.status) }}</span>
+                </td>
+              </tr>
+              <tr *ngIf="solicitacoesNegadas.length === 0">
+                <td colspan="4" style="text-align: center; color: #888;">Nenhuma solicitação negada recentemente</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+
     <router-outlet></router-outlet>
 
   </div>

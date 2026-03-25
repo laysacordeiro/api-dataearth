@@ -42,14 +42,15 @@ export class LoginComponent {
     this.authService.login({ username, password }).subscribe({
       next: (res) => {
         this.authService.setToken(res.token); // ✅ salva só o JWT puro
-        this.router.navigate(['/mainpage']);
         
         if (this.authService.hasRole('ROLE_USER')) {
-          this.router.navigate(['/visitante']);
+          this.router.navigate(['/welcome']);
         } else if (
           this.authService.hasRole('ROLE_RESC') ||
           this.authService.hasRole('ROLE_ADMIN')
         ) {
+          this.router.navigate(['/mainpage']);
+        } else {
           this.router.navigate(['/mainpage']);
         }
 

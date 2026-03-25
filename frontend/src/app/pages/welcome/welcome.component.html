@@ -1,0 +1,20 @@
+<app-layout>
+  <div class="welcome-container">
+    <div class="welcome-card">
+      <div class="card-image-header"></div>
+
+      <div class="card-body">
+        <h1>Olá, seja bem-vindo(a)!</h1>
+        <p>Você está acessando o sistema de banco de dados da <strong>Reserva Biológica do Gurupi</strong>.</p>
+        <p>Neste ambiente, o seu acesso de Visitante permite a visualização detalhada de todo o nosso repositório de
+          dados. Você poderá explorar as tabelas usando o menu de navegação ao lado.</p>
+
+        <div class="info-badges">
+          <span (click)="irParaEspecies()" class="badge badge-especie">Consultar Espécies</span>
+          <span (click)="irParaMonolito()" class="badge badge-monolito">Consultar Monólitos</span>
+          <span (click)="irParaParcelas()" class="badge badge-parcela">Consultar Parcelas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-layout>

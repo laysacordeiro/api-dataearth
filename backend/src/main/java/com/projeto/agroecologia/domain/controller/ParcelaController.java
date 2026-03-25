@@ -18,8 +18,8 @@ public class ParcelaController {
     }
 
     @PostMapping
-    public ResponseEntity<Parcela> criar(@RequestBody Parcela parcela) {
-        return ResponseEntity.status(201).body(service.salvar(parcela));
+    public ResponseEntity<Parcela> criar(@RequestBody Parcela parcela, @RequestParam(required = false) Long monolitoId) {
+        return ResponseEntity.status(201).body(service.salvarComMonolito(parcela, monolitoId));
     }
 
     @GetMapping

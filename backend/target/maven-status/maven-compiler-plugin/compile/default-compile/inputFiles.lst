@@ -1,5 +1,6 @@
 /home/user/Área de trabalho/New Folder/api-dataearth/backend/src/main/java/com/projeto/agroecologia/AgroecologiaApplication.java
 /home/user/Área de trabalho/New Folder/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/config/AppConfig.java
+/home/user/Área de trabalho/New Folder/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/config/AsyncConfig.java
 /home/user/Área de trabalho/New Folder/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/config/FilterConfig.java
 /home/user/Área de trabalho/New Folder/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/config/JwtAuthenticationFilter.java
 /home/user/Área de trabalho/New Folder/api-dataearth/backend/src/main/java/com/projeto/agroecologia/domain/config/SecurityConfig.java

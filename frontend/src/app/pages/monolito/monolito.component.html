@@ -5,7 +5,7 @@
       <div class="card-header">
         <h2>Lista de Monólitos</h2>
         <div class="spaceflex">
-          <button mat-raised-button class="btn-nova" (click)="abrirCadastroMonolito()">
+          <button mat-raised-button class="btn-nova" *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="abrirCadastroMonolito()">
             Novo Monólito
           </button>
         </div>
@@ -135,11 +135,11 @@
               <mat-icon>account_tree</mat-icon>
             </button>
 
-            <button mat-icon-button color="accent">
+            <button mat-icon-button color="accent" *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')">
               <mat-icon>edit</mat-icon>
             </button>
 
-            <button mat-icon-button color="warn" matTooltip="Excluir" (click)="excluirMonolito(m)">
+            <button mat-icon-button color="warn" matTooltip="Excluir" *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="excluirMonolito(m)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
