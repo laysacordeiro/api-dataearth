@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/monolitos")
+@Tag(name = "Monolitos", description = "Gestão de monolitos, tombos e associação com espécies")
 public class MonolitoController {
 
     private final MonolitoService service;

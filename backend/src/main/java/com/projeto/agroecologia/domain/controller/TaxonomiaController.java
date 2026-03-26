@@ -5,9 +5,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.projeto.agroecologia.domain.model.Taxonomia;
 import com.projeto.agroecologia.domain.service.TaxonomiaService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/taxonomias")
+@Tag(name = "Taxonomias", description = "Gestão da hierarquia taxonômica (reino, filo, classe, ordem, família, gênero)")
 public class TaxonomiaController {
 
     private final TaxonomiaService service;

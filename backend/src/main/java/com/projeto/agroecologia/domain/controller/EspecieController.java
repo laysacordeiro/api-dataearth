@@ -5,9 +5,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.projeto.agroecologia.domain.model.Especie;
 import com.projeto.agroecologia.domain.service.EspecieService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/especies")
+@Tag(name = "Espécies", description = "CRUD de espécies botânicas com vínculo taxonômico")
 public class EspecieController {
 
     private final EspecieService service;

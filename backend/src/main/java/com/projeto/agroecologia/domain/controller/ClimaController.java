@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/climas")
+@Tag(name = "Climas", description = "Gestão de dados climáticos (Köppen, temperatura, precipitação)")
 public class ClimaController {
 
     private final ClimaService service;

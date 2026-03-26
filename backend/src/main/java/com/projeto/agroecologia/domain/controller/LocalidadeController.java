@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/localidades")
+@Tag(name = "Localidades", description = "Gestão de localidades com coordenadas geográficas e unidades de conservação")
 public class LocalidadeController {
 
     private final LocalidadeService service;

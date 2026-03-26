@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/parcelas")
+@Tag(name = "Parcelas", description = "Gestão de parcelas georreferenciadas com localidade, clima e ambiente")
 public class ParcelaController {
 
     private final ParcelaService service;

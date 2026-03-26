@@ -5,7 +5,9 @@
       <div class="card-header">
         <h2>Lista de Espécies</h2>
         <div class="spaceflex">
-          <button mat-raised-button class="btn-nova" *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="abrirCadastroEspecie()">
+          <button mat-raised-button class="btn-nova"
+            *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')"
+            (click)="abrirCadastroEspecie()">
             Nova Espécie
           </button>
         </div>
@@ -13,12 +15,8 @@
 
       <div class="filtros-bar">
         <div class="search-pill">
-          <input
-            type="text"
-            placeholder="Pesquisar nome (popular ou científico)..."
-            [ngModel]="searchTerm"
-            (ngModelChange)="onSearchChange($event)"
-          />
+          <input type="text" placeholder="Pesquisar nome (popular ou científico)..." [ngModel]="searchTerm"
+            (ngModelChange)="onSearchChange($event)" />
           <mat-icon class="search-icon">search</mat-icon>
         </div>
 
@@ -56,12 +54,8 @@
               <div class="tax-header">
                 <span class="tax-label">{{ level.label }}</span>
 
-                <button
-                  type="button"
-                  class="tax-toggle"
-                  (click)="toggleTaxLevel(level.key); $event.stopPropagation()"
-                  aria-label="Expandir/Fechar"
-                >
+                <button type="button" class="tax-toggle" (click)="toggleTaxLevel(level.key); $event.stopPropagation()"
+                  aria-label="Expandir/Fechar">
                   <span class="toggle-symbol">
                     {{ expandedTaxLevels[level.key] ? '−' : '+' }}
                   </span>
@@ -69,13 +63,9 @@
               </div>
 
               <div class="tax-options" *ngIf="expandedTaxLevels[level.key]">
-                <button
-                  type="button"
-                  class="tax-pill"
-                  *ngFor="let opt of (taxOptions[level.key] || [])"
+                <button type="button" class="tax-pill" *ngFor="let opt of (taxOptions[level.key] || [])"
                   [class.selected]="filters.taxonomia[level.key] === opt"
-                  (click)="selectTaxOption(level.key, opt); $event.stopPropagation()"
-                >
+                  (click)="selectTaxOption(level.key, opt); $event.stopPropagation()">
                   {{ opt }}
                 </button>
 
@@ -99,22 +89,13 @@
           <div class="menu-title">Monólito</div>
 
           <div class="simple-list">
-            <button
-              type="button"
-              class="simple-item"
-              [class.selected]="!filters.monolito"
-              (click)="setMonolito(null); $event.stopPropagation()"
-            >
+            <button type="button" class="simple-item" [class.selected]="!filters.monolito"
+              (click)="setMonolito(null); $event.stopPropagation()">
               Todos
             </button>
 
-            <button
-              type="button"
-              class="simple-item"
-              *ngFor="let m of monolitoOptions"
-              [class.selected]="filters.monolito === m"
-              (click)="setMonolito(m); $event.stopPropagation()"
-            >
+            <button type="button" class="simple-item" *ngFor="let m of monolitoOptions"
+              [class.selected]="filters.monolito === m" (click)="setMonolito(m); $event.stopPropagation()">
               {{ m }}
             </button>
 
@@ -130,22 +111,13 @@
           <div class="menu-title">Ano</div>
 
           <div class="simple-list">
-            <button
-              type="button"
-              class="simple-item"
-              [class.selected]="!filters.ano"
-              (click)="setAno(null); $event.stopPropagation()"
-            >
+            <button type="button" class="simple-item" [class.selected]="!filters.ano"
+              (click)="setAno(null); $event.stopPropagation()">
               Todos
             </button>
 
-            <button
-              type="button"
-              class="simple-item"
-              *ngFor="let a of anoOptions"
-              [class.selected]="filters.ano === a"
-              (click)="setAno(a); $event.stopPropagation()"
-            >
+            <button type="button" class="simple-item" *ngFor="let a of anoOptions" [class.selected]="filters.ano === a"
+              (click)="setAno(a); $event.stopPropagation()">
               {{ a }}
             </button>
 
@@ -161,22 +133,13 @@
           <div class="menu-title">Autor</div>
 
           <div class="simple-list">
-            <button
-              type="button"
-              class="simple-item"
-              [class.selected]="!filters.autor"
-              (click)="setAutor(null); $event.stopPropagation()"
-            >
+            <button type="button" class="simple-item" [class.selected]="!filters.autor"
+              (click)="setAutor(null); $event.stopPropagation()">
               Todos
             </button>
 
-            <button
-              type="button"
-              class="simple-item"
-              *ngFor="let au of autorOptions"
-              [class.selected]="filters.autor === au"
-              (click)="setAutor(au); $event.stopPropagation()"
-            >
+            <button type="button" class="simple-item" *ngFor="let au of autorOptions"
+              [class.selected]="filters.autor === au" (click)="setAutor(au); $event.stopPropagation()">
               {{ au }}
             </button>
 
@@ -212,13 +175,17 @@
         <ng-container matColumnDef="acoes">
           <th mat-header-cell *matHeaderCellDef> </th>
           <td mat-cell *matCellDef="let especie" class="acoes-cell">
-            <button mat-icon-button color="primary" (click)="verTaxonomia(especie)">
+            <button mat-icon-button color="primary" matTooltip="Visualizar" (click)="verTaxonomia(especie)">
               <mat-icon>account_tree</mat-icon>
             </button>
-            <button mat-icon-button color="accent" *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="editarEspecie(especie)">
+            <button mat-icon-button color="accent" matTooltip="Editar"
+              *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')"
+              (click)="editarEspecie(especie)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="excluirEspecie(especie)">
+            <button mat-icon-button color="warn" matTooltip="Excluir"
+              *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')"
+              (click)="excluirEspecie(especie)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
@@ -236,12 +203,8 @@
         <span>{{ dataSource.filteredData.length }} total</span>
       </div>
 
-      <mat-paginator
-        #paginator
-        [pageSize]="itensPorPagina"
-        [pageSizeOptions]="[5,10,20]"
-        style="display:none"
-      ></mat-paginator>
+      <mat-paginator #paginator [pageSize]="itensPorPagina" [pageSizeOptions]="[5,10,20]"
+        style="display:none"></mat-paginator>
 
     </div>
 

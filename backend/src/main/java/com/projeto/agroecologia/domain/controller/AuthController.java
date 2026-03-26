@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.projeto.agroecologia.domain.model.User;
 import com.projeto.agroecologia.domain.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticação", description = "Endpoints de login, registro e listagem de usuários")
 public class AuthController {
 
     @Autowired

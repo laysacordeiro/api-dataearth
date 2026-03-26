@@ -43,7 +43,7 @@ export class ParcelaComponent implements OnInit, AfterViewInit {
     itensPorPagina: number = 5;
 
     parcelas: Parcela[] = [];
-    displayedColumns: string[] = ['id', 'proprietario', 'usoDaTerra', 'data', 'acoes'];
+    displayedColumns: string[] = ['proprietario', 'usoDaTerra', 'data', 'acoes'];
 
     dataSource = new MatTableDataSource<Parcela>([]);
     filtroProprietario: string = '';
@@ -98,7 +98,7 @@ export class ParcelaComponent implements OnInit, AfterViewInit {
     aplicarFiltros(): void {
         const filterValue = this.filtroProprietario;
         this.dataSource.filter = filterValue.trim().toLowerCase();
-        
+
         this.dataSource.filterPredicate = (data: Parcela, filter: string) => {
             return (data.proprietario || '').toLowerCase().includes(filter);
         };

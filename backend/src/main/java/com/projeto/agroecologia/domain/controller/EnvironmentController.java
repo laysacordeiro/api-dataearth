@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/environments")
+@Tag(name = "Ambientes", description = "Gestão de dados ambientais (vegetação, solo, bioma)")
 public class EnvironmentController {
 
     private final EnvironmentService service;

@@ -5,7 +5,9 @@
             <div class="card-header">
                 <h2>Lista de Parcelas</h2>
                 <div class="spaceflex">
-                    <button mat-raised-button class="btn-nova" *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="abrirCadastroParcela()">
+                    <button mat-raised-button class="btn-nova"
+                        *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')"
+                        (click)="abrirCadastroParcela()">
                         Nova Parcela
                     </button>
                 </div>
@@ -21,10 +23,6 @@
             </div>
 
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-                <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef> ID </th>
-                    <td mat-cell *matCellDef="let p"> {{ p.id }} </td>
-                </ng-container>
 
                 <ng-container matColumnDef="proprietario">
                     <th mat-header-cell *matHeaderCellDef> Proprietário </th>
@@ -48,11 +46,14 @@
                             <mat-icon>account_tree</mat-icon>
                         </button>
 
-                        <button mat-icon-button color="accent" matTooltip="Editar" *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')">
+                        <button mat-icon-button color="accent" matTooltip="Editar"
+                            *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')">
                             <mat-icon>edit</mat-icon>
                         </button>
 
-                        <button mat-icon-button color="warn" matTooltip="Excluir" *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')" (click)="excluirParcela(p)">
+                        <button mat-icon-button color="warn" matTooltip="Excluir"
+                            *ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_RESC')"
+                            (click)="excluirParcela(p)">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </td>

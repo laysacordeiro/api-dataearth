@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.projeto.agroecologia.domain.model.Solicitacao;
 import com.projeto.agroecologia.domain.service.SolicitacaoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/admin/solicitacoes")
+@Tag(name = "Solicitações (Admin)", description = "Painel administrativo para aprovação/rejeição de solicitações de acesso")
 public class SolicitacaoController {
 
     @Autowired
