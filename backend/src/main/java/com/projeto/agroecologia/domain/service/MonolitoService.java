@@ -2,9 +2,11 @@ package com.projeto.agroecologia.domain.service;
 
 import com.projeto.agroecologia.domain.model.Especie;
 import com.projeto.agroecologia.domain.model.Monolito;
+import com.projeto.agroecologia.domain.model.Parcela;
 import com.projeto.agroecologia.domain.model.Tombo;
 import com.projeto.agroecologia.domain.repository.EspecieRepository;
 import com.projeto.agroecologia.domain.repository.MonolitoRepository;
+import com.projeto.agroecologia.domain.repository.ParcelaRepository;
 import com.projeto.agroecologia.domain.repository.TomboRepository;
 
 import org.springframework.http.HttpStatus;
@@ -20,14 +22,17 @@ public class MonolitoService {
     private final MonolitoRepository monolitoRepository;
     private final EspecieRepository especieRepository;
     private final TomboRepository tomboRepository;
+    private final ParcelaRepository parcelaRepository;
 
     public MonolitoService(
             MonolitoRepository monolitoRepository,
             EspecieRepository especieRepository,
-            TomboRepository tomboRepository) {
+            TomboRepository tomboRepository,
+            ParcelaRepository parcelaRepository) {
         this.monolitoRepository = monolitoRepository;
         this.especieRepository = especieRepository;
         this.tomboRepository = tomboRepository;
+        this.parcelaRepository = parcelaRepository;
     }
 
     /*
@@ -63,6 +68,44 @@ public class MonolitoService {
             throw new RuntimeException("Monólito não encontrado");
         }
         monolitoRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Monolito vincularParcela(Long monolitoId, Long parcelaId) {
+        Monolito monolito = buscarPorId(monolitoId);
+        Parcela parcela = parcelaRepository.findById(parcelaId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parcela não encontrada"));
+        monolito.setParcela(parcela);
+        return monolitoRepository.save(monolito);
+    }
+
+    @Transactional
+    public Monolito desvincularParcela(Long monolitoId) {
+        Monolito monolito = buscarPorId(monolitoId);
+        monolito.setParcela(null);
+        return monolitoRepository.save(monolito);
+    }
+
+    @Transactional
+    public Monolito atualizar(Long id, Monolito dados) {
+        Monolito monolito = buscarPorId(id);
+
+        monolito.setStationFieldNumber(dados.getStationFieldNumber());
+        monolito.setSamplingNumber(dados.getSamplingNumber());
+        monolito.setMetodo(dados.getMetodo());
+        monolito.setProfundidadeSolo(dados.getProfundidadeSolo());
+        monolito.setDia(dados.getDia());
+        monolito.setMes(dados.getMes());
+        monolito.setAno(dados.getAno());
+        monolito.setCollector(dados.getCollector());
+        monolito.setRemarks(dados.getRemarks());
+        monolito.setDescription(dados.getDescription());
+
+        if (dados.getParcela() != null) {
+            monolito.setParcela(dados.getParcela());
+        }
+
+        return monolitoRepository.save(monolito);
     }
 
     public List<Monolito> buscarPorCollector(String collector) {

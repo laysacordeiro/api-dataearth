@@ -1,0 +1,170 @@
+<div *ngIf="!carregando; else loading" class="dialog-container">
+
+  <!-- Título -->
+  <h1 class="titulo">
+    <span class="titulo-icone">🌍</span>
+    Parcela — {{ parcela?.proprietario || 'Sem proprietário' }}
+  </h1>
+
+  <!-- Dados Gerais -->
+  <section class="section">
+    <div class="section-header" (click)="toggleSecao('dados')">
+      <h2>Dados Gerais</h2>
+      <span class="toggle-btn">{{ secoesAbertas['dados'] ? '−' : '+' }}</span>
+    </div>
+    <div class="section-body" *ngIf="secoesAbertas['dados']">
+      <div class="info-grid">
+        <p><strong>Proprietário:</strong> {{ parcela?.proprietario || '-' }}</p>
+        <p><strong>Uso da Terra:</strong> {{ parcela?.usoDaTerra || '-' }}</p>
+        <p><strong>Data do Evento:</strong> {{ formatarData(parcela?.dataDoEvento) }}</p>
+        <p class="full-width" *ngIf="parcela?.description">
+          <strong>Descrição:</strong> {{ parcela?.description }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Localidade -->
+  <section class="section">
+    <div class="section-header" (click)="toggleSecao('localidade')">
+      <h2>Localidade</h2>
+      <span class="toggle-btn">{{ secoesAbertas['localidade'] ? '−' : '+' }}</span>
+    </div>
+    <div class="section-body" *ngIf="secoesAbertas['localidade']">
+      <ng-container *ngIf="parcela?.localidade; else semDados">
+        <div class="info-grid">
+          <p><strong>Localidade:</strong> {{ parcela?.localidade?.locality || '-' }}</p>
+          <p><strong>Município:</strong> {{ parcela?.localidade?.county || '-' }}</p>
+          <p><strong>Estado:</strong> {{ parcela?.localidade?.state || '-' }}</p>
+          <p><strong>País:</strong> {{ parcela?.localidade?.country || '-' }}</p>
+          <p><strong>Continente:</strong> {{ parcela?.localidade?.continent || '-' }}</p>
+          <p><strong>Latitude:</strong> {{ parcela?.localidade?.latitude || '-' }}</p>
+          <p><strong>Longitude:</strong> {{ parcela?.localidade?.longitude || '-' }}</p>
+          <p><strong>Nome UC:</strong> {{ parcela?.localidade?.name_uc || '-' }}</p>
+          <p><strong>Classe UC:</strong> {{ parcela?.localidade?.class_uc || '-' }}</p>
+        </div>
+      </ng-container>
+    </div>
+  </section>
+
+  <!-- Clima -->
+  <section class="section">
+    <div class="section-header" (click)="toggleSecao('clima')">
+      <h2>Clima</h2>
+      <span class="toggle-btn">{{ secoesAbertas['clima'] ? '−' : '+' }}</span>
+    </div>
+    <div class="section-body" *ngIf="secoesAbertas['clima']">
+      <ng-container *ngIf="parcela?.clima; else semDados">
+        <div class="info-grid">
+          <p><strong>Clima Köppen:</strong> {{ parcela?.clima?.clima_koppen || '-' }}</p>
+          <p><strong>Temp. Média (°C):</strong> {{ parcela?.clima?.avg_temp ?? '-' }}</p>
+          <p><strong>Precipitação Média (mm):</strong> {{ parcela?.clima?.avg_precip ?? '-' }}</p>
+          <p class="full-width" *ngIf="parcela?.clima?.description">
+            <strong>Descrição:</strong> {{ parcela?.clima?.description }}
+          </p>
+        </div>
+      </ng-container>
+    </div>
+  </section>
+
+  <!-- Ambiente -->
+  <section class="section">
+    <div class="section-header" (click)="toggleSecao('ambiente')">
+      <h2>Ambiente</h2>
+      <span class="toggle-btn">{{ secoesAbertas['ambiente'] ? '−' : '+' }}</span>
+    </div>
+    <div class="section-body" *ngIf="secoesAbertas['ambiente']">
+      <ng-container *ngIf="parcela?.environment; else semDados">
+        <div class="info-grid">
+          <p><strong>Tipo de Vegetação:</strong> {{ parcela?.environment?.vegeType || '-' }}</p>
+          <p><strong>Tipo de Preparação:</strong> {{ parcela?.environment?.prepType || '-' }}</p>
+          <p><strong>Tipo de Solo:</strong> {{ parcela?.environment?.soilType || '-' }}</p>
+          <p><strong>Vegetação Atual:</strong> {{ parcela?.environment?.currentVege || '-' }}</p>
+          <p><strong>Vegetação Original:</strong> {{ parcela?.environment?.originalVege || '-' }}</p>
+          <p><strong>Idade da Vegetação:</strong> {{ parcela?.environment?.vegeAge ?? '-' }}</p>
+          <p><strong>Bioma:</strong> {{ parcela?.environment?.biome || '-' }}</p>
+        </div>
+      </ng-container>
+    </div>
+  </section>
+
+  <!-- Monólitos Vinculados -->
+  <section class="section">
+    <div class="section-header" (click)="toggleSecao('monolitos')">
+      <h2>Monólitos Vinculados <span class="badge">{{ monolitosComEspecies.length }}</span></h2>
+      <span class="toggle-btn">{{ secoesAbertas['monolitos'] ? '−' : '+' }}</span>
+    </div>
+    <div class="section-body" *ngIf="secoesAbertas['monolitos']">
+      <div *ngIf="monolitosComEspecies.length > 0; else semMonolitos">
+
+        <!-- Each monolito as a sub-card -->
+        <div class="monolito-card" *ngFor="let item of monolitosComEspecies">
+          <div class="monolito-header" (click)="toggleMonolito(item.monolito.id!)">
+            <div class="monolito-label">
+              <strong>{{ item.monolito.stationFieldNumber }}</strong>
+              <span class="monolito-meta">
+                — Amostra {{ item.monolito.samplingNumber }}
+                &nbsp;|&nbsp; {{ formatarDataMonolito(item.monolito) }}
+                &nbsp;|&nbsp; {{ item.tombos.length }} espécie(s)
+              </span>
+            </div>
+            <span class="toggle-btn-sm">{{ monolitoAberto[item.monolito.id!] ? '−' : '+' }}</span>
+          </div>
+
+          <div class="monolito-body" *ngIf="monolitoAberto[item.monolito.id!]">
+            <div class="monolito-info">
+              <span><strong>Método:</strong> {{ item.monolito.metodo || '-' }}</span>
+              <span><strong>Profundidade:</strong> {{ item.monolito.profundidadeSolo || '-' }}</span>
+              <span><strong>Coletor:</strong> {{ item.monolito.collector || '-' }}</span>
+            </div>
+
+            <div *ngIf="item.tombos.length > 0; else semEspecies">
+              <table class="species-table">
+                <thead>
+                  <tr>
+                    <th>Nome Científico</th>
+                    <th>Nome Popular</th>
+                    <th>Abundância</th>
+                    <th>Identificador</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let tombo of item.tombos">
+                    <td><em>{{ tombo.especie?.nomeCientifico || '-' }}</em></td>
+                    <td>{{ tombo.especie?.nome || '-' }}</td>
+                    <td>{{ tombo.abundancia ?? '-' }}</td>
+                    <td>{{ tombo.identificador || '-' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ng-template #semEspecies>
+              <p class="sem-dados">Nenhuma espécie neste monólito.</p>
+            </ng-template>
+          </div>
+        </div>
+
+      </div>
+      <ng-template #semMonolitos>
+        <p class="sem-dados">Nenhum monólito vinculado a esta parcela.</p>
+      </ng-template>
+    </div>
+  </section>
+
+  <!-- Botão -->
+  <div class="actions">
+    <button class="btn-fechar" (click)="fechar()">Fechar</button>
+  </div>
+
+</div>
+
+<ng-template #semDados>
+  <p class="sem-dados">Dados não disponíveis.</p>
+</ng-template>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</ng-template>

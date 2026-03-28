@@ -15,12 +15,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 
 import { LayoutComponent } from '../../components/mainpage-layout/layout.component';
 import { FormMonolitoComponent } from './form-painel-monolito/form-painel-mono.component';
+import { FormVisualizarMonolitoComponent } from './form-visualizar-monolito/form-visualizar-monolito.component';
 import { MonolitoService } from '../../services/monolito.service';
 import { EspecieService } from '../../services/especie.service';
 import { AuthService } from '../../services/auth.service';
@@ -46,6 +47,7 @@ import { Especie } from '../../models/especie.model';
     MatPaginatorModule,
     MatMenuModule,
     MatTooltipModule,
+    MatDialogModule,
     LayoutComponent
   ],
 })
@@ -266,6 +268,15 @@ export class MonolitoComponent implements OnInit, AfterViewInit {
       if (result === true) {
         this.carregarDadosIniciais();
       }
+    });
+  }
+
+  verMonolito(monolito: Monolito): void {
+    if (!monolito.id) return;
+    this.dialog.open(FormVisualizarMonolitoComponent, {
+      width: '650px',
+      maxWidth: '95vw',
+      data: { id: monolito.id }
     });
   }
 

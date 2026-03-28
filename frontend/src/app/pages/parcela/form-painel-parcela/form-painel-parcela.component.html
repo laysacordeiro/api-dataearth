@@ -21,14 +21,16 @@
         <label>Descrição</label>
         <textarea formControlName="description" rows="3"></textarea>
 
-        <label>Monólito Associado</label>
-        <select formControlName="monolitoId">
-          <option [ngValue]="null">Sem associação (Opcional)</option>
-          <option *ngFor="let m of monolitos" [ngValue]="m.id">
-            {{ m.stationFieldNumber }}
-          </option>
-        </select>
-        <small style="color:#666; font-size:12px;">Associe a um monólito previamente criado</small>
+        <label>Monólitos Associados</label>
+        <mat-form-field appearance="outline" style="width:100%">
+          <mat-label>Selecione os Monólitos</mat-label>
+          <mat-select formControlName="monolitoIds" multiple>
+            <mat-option *ngFor="let m of monolitos" [value]="m.id">
+              {{ m.stationFieldNumber }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <small style="color:#666; font-size:12px;">Associe um ou mais monólitos a esta parcela</small>
       </div>
 
       <!-- CLIMA -->

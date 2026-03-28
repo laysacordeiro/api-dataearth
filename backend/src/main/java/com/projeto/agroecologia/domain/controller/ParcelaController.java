@@ -1,5 +1,6 @@
 package com.projeto.agroecologia.domain.controller;
 
+import com.projeto.agroecologia.domain.model.Monolito;
 import com.projeto.agroecologia.domain.model.Parcela;
 import com.projeto.agroecologia.domain.service.ParcelaService;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,10 @@ public class ParcelaController {
     }
 
     @PostMapping
-    public ResponseEntity<Parcela> criar(@RequestBody Parcela parcela, @RequestParam(required = false) Long monolitoId) {
-        return ResponseEntity.status(201).body(service.salvarComMonolito(parcela, monolitoId));
+    public ResponseEntity<Parcela> criar(
+            @RequestBody Parcela parcela,
+            @RequestParam(value = "monolitoIds", required = false) List<Long> monolitoIds) {
+        return ResponseEntity.status(201).body(service.salvarComMonolito(parcela, monolitoIds));
     }
 
     @GetMapping
@@ -32,6 +35,11 @@ public class ParcelaController {
     @GetMapping("/{id}")
     public ResponseEntity<Parcela> buscarPorId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @GetMapping("/{id}/monolitos")
+    public ResponseEntity<List<Monolito>> listarMonolitos(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(service.listarMonolitos(id));
     }
 
     @PutMapping("/{id}")

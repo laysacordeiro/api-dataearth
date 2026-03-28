@@ -23,8 +23,8 @@ public class MonolitoController {
 
     @PostMapping("/{monolitoId}/especies/{especieId}")
     public ResponseEntity<Void> adicionarEspecieComDados(
-            @PathVariable Long monolitoId,
-            @PathVariable Long especieId,
+            @PathVariable("monolitoId") Long monolitoId,
+            @PathVariable("especieId") Long especieId,
             @RequestBody Tombo dados) {
 
         service.adicionarEspecieComDados(
@@ -36,8 +36,30 @@ public class MonolitoController {
     }
 
     @GetMapping("/{id}/tombos")
-    public List<Tombo> listarTombos(@PathVariable Long id) {
+    public List<Tombo> listarTombos(@PathVariable("id") Long id) {
         return service.listarTombos(id);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Monolito> buscarPorId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @PutMapping("/{id}")
+    public Monolito atualizar(@PathVariable("id") Long id, @RequestBody Monolito monolito) {
+        return service.atualizar(id, monolito);
+    }
+
+    @PatchMapping("/{id}/parcela/{parcelaId}")
+    public ResponseEntity<Monolito> vincularParcela(
+            @PathVariable("id") Long monolitoId,
+            @PathVariable("parcelaId") Long parcelaId) {
+        return ResponseEntity.ok(service.vincularParcela(monolitoId, parcelaId));
+    }
+
+    @DeleteMapping("/{id}/parcela")
+    public ResponseEntity<Monolito> desvincularParcela(@PathVariable("id") Long monolitoId) {
+        return ResponseEntity.ok(service.desvincularParcela(monolitoId));
     }
 
     @PostMapping
@@ -51,12 +73,12 @@ public class MonolitoController {
     }
 
     @GetMapping("/collector")
-    public List<Monolito> buscarPorCollector(@RequestParam String collector) {
+    public List<Monolito> buscarPorCollector(@RequestParam("collector") String collector) {
         return service.buscarPorCollector(collector);
     }
 
     @GetMapping("/metodo")
-    public List<Monolito> buscarPorMetodo(@RequestParam String metodo) {
+    public List<Monolito> buscarPorMetodo(@RequestParam("metodo") String metodo) {
         return service.buscarPorMetodo(metodo);
     }
 
@@ -66,36 +88,36 @@ public class MonolitoController {
     }
 
     @GetMapping("/especie")
-    public List<Monolito> buscarPorEspecie(@RequestParam String especie) {
+    public List<Monolito> buscarPorEspecie(@RequestParam("especie") String especie) {
         return service.buscarMonolitosPorEspecie(especie);
     }
 
     @GetMapping("/verificar")
     public ResponseEntity<Boolean> verificarExistencia(
-            @RequestParam String stationFieldNumber) {
+            @RequestParam("stationFieldNumber") String stationFieldNumber) {
 
         boolean existe = service.existePorStationFieldNumber(stationFieldNumber);
         return ResponseEntity.ok(existe);
     }
 
     @GetMapping("/tombos/buscar")
-    public ResponseEntity<List<Tombo>> buscarPorIdentificador(@RequestParam String identificador) {
+    public ResponseEntity<List<Tombo>> buscarPorIdentificador(@RequestParam("identificador") String identificador) {
         List<Tombo> tombos = service.buscarTombosPorIdentificador(identificador);
         return ResponseEntity.ok(tombos);
     }
 
     @GetMapping("/tombos/verificar-identificador")
-    public ResponseEntity<Boolean> verificarIdentificador(@RequestParam String identificador) {
+    public ResponseEntity<Boolean> verificarIdentificador(@RequestParam("identificador") String identificador) {
         return ResponseEntity.ok(service.existeIdentificador(identificador));
     }
 
     @DeleteMapping("/deletar/{id}")
-    public void deletar(@PathVariable Long id) {
+    public void deletar(@PathVariable("id") Long id) {
         service.deletar(id);
     }
 
     @DeleteMapping("/tombos/{tomboId}")
-    public ResponseEntity<Void> removerTombo(@PathVariable Long tomboId) {
+    public ResponseEntity<Void> removerTombo(@PathVariable("tomboId") Long tomboId) {
         service.removerTombo(tomboId);
         return ResponseEntity.noContent().build();
     }

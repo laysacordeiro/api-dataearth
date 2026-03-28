@@ -11,13 +11,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 
 import { LayoutComponent } from '../../components/mainpage-layout/layout.component';
 import { FormParcelaComponent } from './form-painel-parcela/form-painel-parcela.component';
+import { FormVisualizarParcelaComponent } from './form-visualizar-parcela/form-visualizar-parcela.component';
 import { ParcelaService } from '../../services/parcela.service';
+import { MonolitoService } from '../../services/monolito.service';
 import { AuthService } from '../../services/auth.service';
 import { Parcela } from '../../models/parcela.model';
 
@@ -36,6 +38,7 @@ import { Parcela } from '../../models/parcela.model';
         MatTableModule,
         MatPaginatorModule,
         MatTooltipModule,
+        MatDialogModule,
         LayoutComponent
     ]
 })
@@ -52,6 +55,7 @@ export class ParcelaComponent implements OnInit, AfterViewInit {
 
     constructor(
         private parcelaService: ParcelaService,
+        private monolitoService: MonolitoService,
         public authService: AuthService,
         private router: Router,
         private dialog: MatDialog,
@@ -106,6 +110,16 @@ export class ParcelaComponent implements OnInit, AfterViewInit {
         if (this.dataSource.paginator) {
             this.dataSource.paginator.firstPage();
         }
+    }
+
+    verParcela(parcela: Parcela): void {
+        if (!parcela.id) return;
+        this.dialog.open(FormVisualizarParcelaComponent, {
+            width: '700px',
+            maxWidth: '95vw',
+            maxHeight: '90vh',
+            data: { id: parcela.id }
+        });
     }
 
     abrirCadastroParcela(): void {

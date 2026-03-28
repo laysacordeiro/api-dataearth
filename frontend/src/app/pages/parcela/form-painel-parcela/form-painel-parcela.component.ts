@@ -63,7 +63,7 @@ export class FormParcelaComponent implements OnInit {
       usoDaTerra: ['', Validators.required],
       dataDoEvento: ['', Validators.required],
       description: [''],
-      monolitoId: [null],
+      monolitoIds: [[]],
 
       localidade: this.fb.group({
         locality: ['', Validators.required],
@@ -116,9 +116,8 @@ export class FormParcelaComponent implements OnInit {
 
     this.saving = true;
     const formValue = this.formParcela.getRawValue();
-    const monolitoId = formValue.monolitoId;
+    const monolitoIds: number[] = formValue.monolitoIds ?? [];
 
-    // Remove monolitoId from the main model to map cleanly to backend Parcela model without it being inside body
     const payload: Parcela = {
       proprietario: formValue.proprietario,
       usoDaTerra: formValue.usoDaTerra,
@@ -130,7 +129,6 @@ export class FormParcelaComponent implements OnInit {
     };
 
     if (this.data?.id) {
-      // Edit mode
       this.parcelaService.atualizar(this.data.id, payload).subscribe({
         next: () => {
           this.snackBar.open('Parcela atualizada com sucesso!', 'Fechar', { duration: 3000 });
@@ -143,8 +141,7 @@ export class FormParcelaComponent implements OnInit {
         }
       });
     } else {
-      // Create mode
-      this.parcelaService.criar(payload, monolitoId).subscribe({
+      this.parcelaService.criar(payload, monolitoIds).subscribe({
         next: () => {
           this.snackBar.open('Parcela criada com sucesso!', 'Fechar', { duration: 3000 });
           this.saving = false;

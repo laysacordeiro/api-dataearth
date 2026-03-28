@@ -1,3 +1,5 @@
+import { Monolito } from './monolito.model';
+
 export interface Localidade {
   id?: number;
   locality: string;
@@ -39,4 +41,5 @@ export interface Parcela {
   localidade: Localidade;
   clima: Clima;
   environment: Environment;
+  monolitos?: Monolito[];
 }

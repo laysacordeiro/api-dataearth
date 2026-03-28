@@ -1,5 +1,6 @@
 package com.projeto.agroecologia.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -42,6 +43,7 @@ public class Monolito {
     @Column(columnDefinition = "TEXT")
     private String remarks;
 
+    @JsonIgnoreProperties({"monolitos", "hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parcela_id")
     private Parcela parcela;

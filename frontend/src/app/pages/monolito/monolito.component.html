@@ -109,7 +109,7 @@
         <ng-container matColumnDef="acoes">
           <th mat-header-cell *matHeaderCellDef> </th>
           <td mat-cell *matCellDef="let m" class="acoes-cell">
-            <button mat-icon-button color="primary" matTooltip="Visualizar">
+            <button mat-icon-button color="primary" matTooltip="Visualizar" (click)="verMonolito(m)">
               <mat-icon>account_tree</mat-icon>
             </button>
 

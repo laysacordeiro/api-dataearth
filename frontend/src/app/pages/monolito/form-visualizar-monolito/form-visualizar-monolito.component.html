@@ -1,0 +1,76 @@
+<div *ngIf="!carregando; else loading" class="dialog-container">
+
+  <!-- Título -->
+  <h1 class="titulo">
+    <span class="titulo-icone">🪨</span>
+    {{ monolito?.stationFieldNumber || 'Monólito' }}
+  </h1>
+
+  <!-- Dados Gerais -->
+  <section class="section">
+    <div class="section-header" (click)="toggleSecao('dados')">
+      <h2>Dados Gerais</h2>
+      <span class="toggle-btn">{{ secoesAbertas['dados'] ? '−' : '+' }}</span>
+    </div>
+
+    <div class="section-body" *ngIf="secoesAbertas['dados']">
+      <div class="info-grid">
+        <p><strong>Station Field Number:</strong> {{ monolito?.stationFieldNumber || '-' }}</p>
+        <p><strong>Sampling Number:</strong> {{ monolito?.samplingNumber ?? '-' }}</p>
+        <p><strong>Método:</strong> {{ monolito?.metodo || '-' }}</p>
+        <p><strong>Profundidade do Solo:</strong> {{ monolito?.profundidadeSolo || '-' }}</p>
+        <p><strong>Data de Coleta:</strong> {{ monolito ? formatarData(monolito) : '-' }}</p>
+        <p><strong>Coletor:</strong> {{ monolito?.collector || '-' }}</p>
+        <p><strong>Parcela Vinculada:</strong> {{ monolito?.parcela?.proprietario || 'Nenhuma' }}</p>
+        <p class="full-width" *ngIf="monolito?.remarks"><strong>Observações:</strong> {{ monolito?.remarks }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Espécies Vinculadas -->
+  <section class="section">
+    <div class="section-header" (click)="toggleSecao('especies')">
+      <h2>Espécies Vinculadas <span class="badge">{{ tombos.length }}</span></h2>
+      <span class="toggle-btn">{{ secoesAbertas['especies'] ? '−' : '+' }}</span>
+    </div>
+
+    <div class="section-body" *ngIf="secoesAbertas['especies']">
+      <div *ngIf="tombos.length > 0; else semEspecies">
+        <table class="species-table">
+          <thead>
+            <tr>
+              <th>Nome Científico</th>
+              <th>Nome Popular</th>
+              <th>Abundância</th>
+              <th>Identificador</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tombo of tombos">
+              <td><em>{{ tombo.especie?.nomeCientifico || '-' }}</em></td>
+              <td>{{ tombo.especie?.nome || '-' }}</td>
+              <td>{{ tombo.abundancia ?? '-' }}</td>
+              <td>{{ tombo.identificador || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #semEspecies>
+        <p class="sem-dados">Nenhuma espécie vinculada a este monólito.</p>
+      </ng-template>
+    </div>
+  </section>
+
+  <!-- Botão -->
+  <div class="actions">
+    <button class="btn-fechar" (click)="fechar()">Fechar</button>
+  </div>
+
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</ng-template>

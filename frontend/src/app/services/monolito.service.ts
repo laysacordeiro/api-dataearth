@@ -21,6 +21,10 @@ export class MonolitoService {
     return this.http.get<Monolito[]>(this.apiUrl);
   }
 
+  buscarPorId(id: number): Observable<Monolito> {
+    return this.http.get<Monolito>(`${this.apiUrl}/${id}`);
+  }
+
   listarMetodos(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/metodos`);
   }
@@ -73,6 +77,14 @@ export class MonolitoService {
 
   deletar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/deletar/${id}`);
+  }
+
+  vincularParcela(monolitoId: number, parcelaId: number): Observable<Monolito> {
+    return this.http.patch<Monolito>(`${this.apiUrl}/${monolitoId}/parcela/${parcelaId}`, {});
+  }
+
+  desvincularParcela(monolitoId: number): Observable<Monolito> {
+    return this.http.delete<Monolito>(`${this.apiUrl}/${monolitoId}/parcela`);
   }
 
   adicionarEspecieComDados(

@@ -30,15 +30,22 @@ public class ParcelaService {
     }
 
     @Transactional
-    public Parcela salvarComMonolito(Parcela parcela, Long monolitoId) {
+    public Parcela salvarComMonolito(Parcela parcela, List<Long> monolitoIds) {
         Parcela salva = parcelaRepository.save(parcela);
-        if (monolitoId != null) {
-            Monolito monolito = monolitoRepository.findById(monolitoId)
-                    .orElseThrow(() -> new RuntimeException("Monólito não encontrado"));
-            monolito.setParcela(salva);
-            monolitoRepository.save(monolito);
+        if (monolitoIds != null && !monolitoIds.isEmpty()) {
+            for (Long monolitoId : monolitoIds) {
+                monolitoRepository.findById(monolitoId).ifPresent(m -> {
+                    m.setParcela(salva);
+                    monolitoRepository.save(m);
+                });
+            }
         }
         return salva;
+    }
+
+    public List<Monolito> listarMonolitos(Long parcelaId) {
+        Parcela parcela = buscarPorId(parcelaId);
+        return parcela.getMonolitos();
     }
 
     public Parcela buscarPorId(Long id) {

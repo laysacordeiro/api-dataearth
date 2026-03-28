@@ -1,3 +1,5 @@
+import { Parcela } from './parcela.model';
+
 export interface Monolito {
   id?: number;
 
@@ -13,4 +15,5 @@ export interface Monolito {
 
   collector: string;
   remarks?: string;
+  parcela?: Parcela;
 }
