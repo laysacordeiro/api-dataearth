@@ -1,18 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-html,body{
-    height: 100%;
+html,
+body {
+  height: 100%;
 }
+
 .custom-snackbar {
-        background: #15997f !important;
-        color: white !important;
-  }
+  background: #15997f !important;
+  color: white !important;
+}
 
 * {
   box-sizing: border-box;
+}
+
+.mat-mdc-select-panel {
+  background-color: #fff !important;
+}
+
+.mdc-menu-surface {
+  background-color: #fff !important;
+}
+
+.mat-mdc-form-field .mdc-line-ripple {
+  display: none !important;
 }
